@@ -38,7 +38,7 @@ class MyHomePage extends StatelessWidget {
       body: Column(
         children: [
           Text('A random idea:'),
-          Text(appState.current.asLowerCase),
+          SelectableText(appState.current.asLowerCase),
         ],
       ),
     );
