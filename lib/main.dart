@@ -55,12 +55,33 @@ class MyHomePage extends StatelessWidget {
       body: Column(
         children: [
           Text('A random idea:'),
-          SelectableText(msg),
+          BigCard(msg),
           ElevatedButton(
             onPressed: appState.next,
             child: Text('New Idea'),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class BigCard extends StatelessWidget {
+  const BigCard(
+    this.msg, {
+    super.key,
+  });
+
+  final String msg;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      color: theme.colorScheme.primary,
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: SelectableText(msg),
       ),
     );
   }
