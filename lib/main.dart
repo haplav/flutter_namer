@@ -25,12 +25,22 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyAppState extends ChangeNotifier {
-  var current = WordPair.random();
+String _generateWordPair() {
+  return WordPair.random().asCamelCase;
+}
 
-  void getNext() {
-    current = WordPair.random();
+class MyAppState extends ChangeNotifier {
+  String? _previous;
+  String _current = _generateWordPair();
+
+  String? get previous => _previous;
+  String get current => _current;
+
+  void next() {
+    _previous = _current;
+    _current = _generateWordPair();
     notifyListeners();
+    print('Got $_current');
   }
 }
 
@@ -38,17 +48,16 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
+    var msg =
+        "${appState.current} ${appState.previous != null ? ' (was ${appState.previous})' : ''}";
 
     return Scaffold(
       body: Column(
         children: [
           Text('A random idea:'),
-          SelectableText(appState.current.asLowerCase),
+          SelectableText(msg),
           ElevatedButton(
-            onPressed: () {
-              appState.getNext();
-              print('Button pressed');
-            },
+            onPressed: appState.next,
             child: Text('New Idea'),
           ),
         ],
