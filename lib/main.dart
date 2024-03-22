@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => MyAppState(),
       child: MaterialApp(
-        title: 'Namer App',
+        title: 'My Name Generator App',
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
@@ -39,6 +39,12 @@ class MyHomePage extends StatelessWidget {
         children: [
           Text('A random idea:'),
           SelectableText(appState.current.asLowerCase),
+          ElevatedButton(
+            onPressed: () {
+              print('Button pressed');
+            },
+            child: Text('New Idea'),
+          ),
         ],
       ),
     );
