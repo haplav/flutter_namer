@@ -48,14 +48,15 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-    var msg =
-        "${appState.current} ${appState.previous != null ? ' (was ${appState.previous})' : ''}";
 
     return Scaffold(
       body: Column(
         children: [
           Text('A random idea:'),
-          BigCard(msg),
+          BigCard(appState.current),
+          SelectableText(appState.previous != null
+              ? "(previously ${appState.previous})"
+              : ''),
           ElevatedButton(
             onPressed: appState.next,
             child: Text('New Idea'),
