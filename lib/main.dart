@@ -50,18 +50,21 @@ class MyHomePage extends StatelessWidget {
     var appState = context.watch<MyAppState>();
 
     return Scaffold(
-      body: Column(
-        children: [
-          Text('A random idea:'),
-          BigWordPairCard(appState.current),
-          SelectableText(appState.previous != null
-              ? "(previously ${appState.previous})"
-              : ''),
-          ElevatedButton(
-            onPressed: appState.next,
-            child: Text('New Idea'),
-          ),
-        ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('A random idea:'),
+            BigWordPairCard(appState.current),
+            SelectableText(appState.previous != null
+                ? "(previously ${appState.previous})"
+                : ''),
+            ElevatedButton(
+              onPressed: appState.next,
+              child: Text('New Idea'),
+            ),
+          ],
+        ),
       ),
     );
   }
