@@ -54,7 +54,6 @@ class MyHomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('A random idea:'),
             BigWordPairCard(appState.current),
             SelectableText(appState.previous != null
                 ? "(previously ${appState.previous})"
@@ -90,22 +89,25 @@ class BigWordPairCard extends StatelessWidget {
     final theme = Theme.of(context);
     final textStyle = _textStyle(theme);
 
-    return Card(
-      color: theme.colorScheme.primary,
-      child: Theme(
-        data: theme.copyWith(
-          textSelectionTheme: TextSelectionThemeData(
-            selectionColor: theme.colorScheme.inversePrimary,
-            selectionHandleColor: theme.colorScheme.onPrimary,
-          ),
+    return Theme(
+      data: theme.copyWith(
+        textSelectionTheme: TextSelectionThemeData(
+          selectionColor: theme.colorScheme.inversePrimary,
+          selectionHandleColor: theme.colorScheme.onPrimary,
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(30),
-          child: SelectableText(
-            wordPair.asCamelCase,
-            style: textStyle,
-            semanticsLabel: "${wordPair.first} ${wordPair.second}",
-            enableInteractiveSelection: true,
+      ),
+      child: Tooltip(
+        message: "Just a random word pair idea!",
+        child: Card(
+          color: theme.colorScheme.primary,
+          child: Padding(
+            padding: const EdgeInsets.all(30),
+            child: SelectableText(
+              wordPair.asCamelCase,
+              style: textStyle,
+              semanticsLabel: "${wordPair.first} ${wordPair.second}",
+              enableInteractiveSelection: true,
+            ),
           ),
         ),
       ),
