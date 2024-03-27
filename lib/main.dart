@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         title: 'My Name Generator App',
         theme: ThemeData(
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrangeAccent),
         ),
         home: MyHomePage(),
       ),
@@ -76,9 +76,9 @@ class BigCard extends StatelessWidget {
   final String msg;
 
   TextStyle? _textStyle(ThemeData theme) {
-    var orig = theme.textTheme.displaySmall;
-    return orig?.copyWith(
-      color: theme.colorScheme.onPrimary,
+    return theme.primaryTextTheme.displaySmall?.copyWith(
+      // color: theme.colorScheme.onPrimary,
+      letterSpacing: 2,
     );
   }
 
@@ -90,7 +90,7 @@ class BigCard extends StatelessWidget {
     return Card(
       color: theme.colorScheme.primary,
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(30),
         child: SelectableText(msg, style: textStyle),
       ),
     );
