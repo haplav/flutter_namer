@@ -25,16 +25,16 @@ class MyApp extends StatelessWidget {
   }
 }
 
-String _generateWordPair() {
-  return WordPair.random().asCamelCase;
+WordPair _generateWordPair() {
+  return WordPair.random();
 }
 
 class MyAppState extends ChangeNotifier {
-  String? _previous;
-  String _current = _generateWordPair();
+  WordPair? _previous;
+  WordPair _current = _generateWordPair();
 
-  String? get previous => _previous;
-  String get current => _current;
+  WordPair? get previous => _previous;
+  WordPair get current => _current;
 
   void next() {
     _previous = _current;
@@ -53,7 +53,7 @@ class MyHomePage extends StatelessWidget {
       body: Column(
         children: [
           Text('A random idea:'),
-          BigCard(appState.current),
+          BigWordPairCard(appState.current),
           SelectableText(appState.previous != null
               ? "(previously ${appState.previous})"
               : ''),
@@ -67,13 +67,13 @@ class MyHomePage extends StatelessWidget {
   }
 }
 
-class BigCard extends StatelessWidget {
-  const BigCard(
-    this.msg, {
+class BigWordPairCard extends StatelessWidget {
+  const BigWordPairCard(
+    this.wordPair, {
     super.key,
   });
 
-  final String msg;
+  final WordPair wordPair;
 
   TextStyle? _textStyle(ThemeData theme) {
     return theme.primaryTextTheme.displaySmall?.copyWith(
@@ -89,9 +89,22 @@ class BigCard extends StatelessWidget {
 
     return Card(
       color: theme.colorScheme.primary,
-      child: Padding(
-        padding: const EdgeInsets.all(30),
-        child: SelectableText(msg, style: textStyle),
+      child: Theme(
+        data: theme.copyWith(
+          textSelectionTheme: TextSelectionThemeData(
+            selectionColor: theme.colorScheme.inversePrimary,
+            selectionHandleColor: theme.colorScheme.onPrimary,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(30),
+          child: SelectableText(
+            wordPair.asCamelCase,
+            style: textStyle,
+            semanticsLabel: "${wordPair.first} ${wordPair.second}",
+            enableInteractiveSelection: true,
+          ),
+        ),
       ),
     );
   }
