@@ -64,7 +64,7 @@ class MyHomePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               BigWordPairCard(appState.current),
-              PreviousPairLabel(previous: appState.previous, textStyle: theme.textTheme.bodySmall),
+              PreviousPairLabel(appState.previous),
               ElevatedButton(
                 onPressed: appState.next,
                 child: Text('New Idea'),
@@ -121,18 +121,17 @@ class BigWordPairCard extends StatelessWidget {
 }
 
 class PreviousPairLabel extends StatelessWidget {
-  PreviousPairLabel({
+  PreviousPairLabel(
+    this.previous, {
     super.key,
-    required this.previous,
-    required this.textStyle,
   });
 
   final WordPair? previous;
-  final TextStyle? textStyle;
 
   @override
   Widget build(BuildContext context) {
-    double baseFontSize = textStyle?.fontSize ?? 14.0;
+    final TextStyle? textStyle = Theme.of(context).textTheme.bodySmall;
+    final double baseFontSize = textStyle?.fontSize ?? 14.0;
     return SizedBox(
       height: 3 * baseFontSize,
       child: Column(
