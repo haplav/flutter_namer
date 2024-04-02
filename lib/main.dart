@@ -56,7 +56,7 @@ class MyHomePage extends StatelessWidget {
           children: [
             BigWordPairCard(appState.current),
             SelectableText(appState.previous != null
-                ? "(previously ${appState.previous})"
+                ? "(previously ${appState.previous.asPascalCase})"
                 : ''),
             ElevatedButton(
               onPressed: appState.next,
@@ -103,7 +103,7 @@ class BigWordPairCard extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(30),
             child: SelectableText(
-              wordPair.asCamelCase,
+              wordPair.asPascalCase,
               style: textStyle,
               semanticsLabel: "${wordPair.first} ${wordPair.second}",
               enableInteractiveSelection: true,
