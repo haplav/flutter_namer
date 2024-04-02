@@ -42,6 +42,23 @@ class MyAppState extends ChangeNotifier {
     notifyListeners();
     print('Got $_current');
   }
+
+  var favorites = <WordPair>{};
+
+  void toggleFavorite() {
+    if (favorites.contains(current)) {
+      favorites.remove(current);
+      print('$_current removed');
+    } else {
+      favorites.add(current);
+      print('$_current added');
+    }
+    notifyListeners();
+  }
+
+  bool isFavorite() {
+    return favorites.contains(current);
+  }
 }
 
 class MyHomePage extends StatelessWidget {
@@ -59,9 +76,19 @@ class MyHomePage extends StatelessWidget {
             children: [
               BigWordPairCard(appState.current),
               PreviousPairLabel(appState.previous),
-              ElevatedButton(
-                onPressed: appState.next,
-                child: Text('New Idea'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: appState.toggleFavorite,
+                    child: Text(appState.isFavorite() ? 'Dislike' : "Like"),
+                  ),
+                  SizedBox(width: 10),
+                  ElevatedButton(
+                    onPressed: appState.next,
+                    child: Text('New Idea'),
+                  ),
+                ],
               ),
             ],
           ),
