@@ -48,33 +48,42 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-    final theme = Theme.of(context);
-    final TextStyle? textStyle = theme.textTheme.labelMedium?.copyWith(color: theme.primaryColor);
+    final ThemeData origTheme = Theme.of(context);
+    final ThemeData theme = origTheme.copyWith(
+        textTheme: origTheme.textTheme.copyWith(
+      bodySmall: origTheme.textTheme.bodySmall?.copyWith(color: origTheme.primaryColor),
+      bodyMedium: origTheme.textTheme.bodyMedium?.copyWith(color: origTheme.primaryColor),
+      bodyLarge: origTheme.textTheme.bodyLarge?.copyWith(color: origTheme.primaryColor),
+    ));
+    final TextStyle? textStyle = theme.textTheme.bodySmall;
     final double baseFontSize = textStyle?.fontSize ?? 14.0;
 
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            BigWordPairCard(appState.current),
-            SizedBox(
-              height: 3 * baseFontSize,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SelectableText(
-                    appState.previous != null ? "(previously: ${appState.previous!.asPascalCase})" : "",
-                    style: textStyle,
-                  ),
-                ],
+    return Theme(
+      data: theme,
+      child: Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              BigWordPairCard(appState.current),
+              SizedBox(
+                height: 3 * baseFontSize,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SelectableText(
+                      appState.previous != null ? "(previously: ${appState.previous!.asPascalCase})" : "",
+                      style: textStyle,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            ElevatedButton(
-              onPressed: appState.next,
-              child: Text('New Idea'),
-            ),
-          ],
+              ElevatedButton(
+                onPressed: appState.next,
+                child: Text('New Idea'),
+              ),
+            ],
+          ),
         ),
       ),
     );
