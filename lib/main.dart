@@ -55,8 +55,6 @@ class MyHomePage extends StatelessWidget {
       bodyMedium: origTheme.textTheme.bodyMedium?.copyWith(color: origTheme.primaryColor),
       bodyLarge: origTheme.textTheme.bodyLarge?.copyWith(color: origTheme.primaryColor),
     ));
-    final TextStyle? textStyle = theme.textTheme.bodySmall;
-    final double baseFontSize = textStyle?.fontSize ?? 14.0;
 
     return Theme(
       data: theme,
@@ -66,18 +64,7 @@ class MyHomePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               BigWordPairCard(appState.current),
-              SizedBox(
-                height: 3 * baseFontSize,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SelectableText(
-                      appState.previous != null ? "(previously: ${appState.previous!.asPascalCase})" : "",
-                      style: textStyle,
-                    ),
-                  ],
-                ),
-              ),
+              PreviousPairLabel(previous: appState.previous, textStyle: theme.textTheme.bodySmall),
               ElevatedButton(
                 onPressed: appState.next,
                 child: Text('New Idea'),
@@ -131,6 +118,34 @@ class BigWordPairCard extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class PreviousPairLabel extends StatelessWidget {
+  PreviousPairLabel({
+    super.key,
+    required this.previous,
+    required this.textStyle,
+  });
+
+  final WordPair? previous;
+  final TextStyle? textStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    double baseFontSize = textStyle?.fontSize ?? 14.0;
+    return SizedBox(
+      height: 3 * baseFontSize,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SelectableText(
+            previous != null ? "(previously: ${previous!.asPascalCase})" : "",
+            style: textStyle,
+          ),
+        ],
       ),
     );
   }
