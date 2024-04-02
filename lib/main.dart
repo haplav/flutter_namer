@@ -48,6 +48,9 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
+    final theme = Theme.of(context);
+    final TextStyle? textStyle = theme.textTheme.labelMedium?.copyWith(color: theme.primaryColor);
+    final double baseFontSize = textStyle?.fontSize ?? 14.0;
 
     return Scaffold(
       body: Center(
@@ -55,9 +58,18 @@ class MyHomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             BigWordPairCard(appState.current),
-            SelectableText(appState.previous != null
-                ? "(previously ${appState.previous.asPascalCase})"
-                : ''),
+            SizedBox(
+              height: 3 * baseFontSize,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SelectableText(
+                    appState.previous != null ? "(previously: ${appState.previous!.asPascalCase})" : "",
+                    style: textStyle,
+                  ),
+                ],
+              ),
+            ),
             ElevatedButton(
               onPressed: appState.next,
               child: Text('New Idea'),
