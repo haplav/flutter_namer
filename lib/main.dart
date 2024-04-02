@@ -143,6 +143,7 @@ class PreviousPairLabel extends StatelessWidget {
         children: [
           SelectableText(
             previous != null ? "(previously: ${previous!.asPascalCase})" : "",
+            semanticsLabel: "${previous?.first} ${previous?.second}",
             style: textStyle,
           ),
         ],
