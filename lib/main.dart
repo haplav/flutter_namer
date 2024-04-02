@@ -85,25 +85,22 @@ class BigWordPairCard extends StatelessWidget {
 
   final WordPair wordPair;
 
-  TextStyle? _textStyle(ThemeData theme) {
-    return theme.primaryTextTheme.displaySmall?.copyWith(
-      // color: theme.colorScheme.onPrimary,
-      letterSpacing: 2,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final textStyle = _textStyle(theme);
-
-    return Theme(
-      data: theme.copyWith(
-        textSelectionTheme: TextSelectionThemeData(
-          selectionColor: theme.colorScheme.inversePrimary,
-          selectionHandleColor: theme.colorScheme.onPrimary,
+    final origTheme = Theme.of(context);
+    final theme = origTheme.copyWith(
+      textSelectionTheme: TextSelectionThemeData(
+        selectionColor: origTheme.colorScheme.inversePrimary,
+        selectionHandleColor: origTheme.colorScheme.onPrimary,
+      ),
+      textTheme: origTheme.primaryTextTheme.copyWith(
+        displaySmall: origTheme.primaryTextTheme.displaySmall?.copyWith(
+          letterSpacing: 2,
         ),
       ),
+    );
+    return Theme(
+      data: theme,
       child: Tooltip(
         message: "Just a random word pair idea!",
         child: Card(
@@ -112,7 +109,7 @@ class BigWordPairCard extends StatelessWidget {
             padding: const EdgeInsets.all(30),
             child: SelectableText(
               wordPair.asPascalCase,
-              style: textStyle,
+              style: theme.textTheme.displaySmall,
               semanticsLabel: "${wordPair.first} ${wordPair.second}",
               enableInteractiveSelection: true,
             ),
