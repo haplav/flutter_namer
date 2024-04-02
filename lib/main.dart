@@ -48,13 +48,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-    final ThemeData origTheme = Theme.of(context);
-    final ThemeData theme = origTheme.copyWith(
-        textTheme: origTheme.textTheme.copyWith(
-      bodySmall: origTheme.textTheme.bodySmall?.copyWith(color: origTheme.primaryColor),
-      bodyMedium: origTheme.textTheme.bodyMedium?.copyWith(color: origTheme.primaryColor),
-      bodyLarge: origTheme.textTheme.bodyLarge?.copyWith(color: origTheme.primaryColor),
-    ));
+    final ThemeData theme = _theme(context);
 
     return Theme(
       data: theme,
@@ -75,6 +69,17 @@ class MyHomePage extends StatelessWidget {
       ),
     );
   }
+
+  ThemeData _theme(BuildContext context) {
+    final orig = Theme.of(context);
+    return orig.copyWith(
+      textTheme: orig.textTheme.copyWith(
+        bodySmall: orig.textTheme.bodySmall?.copyWith(color: orig.primaryColor),
+        bodyMedium: orig.textTheme.bodyMedium?.copyWith(color: orig.primaryColor),
+        bodyLarge: orig.textTheme.bodyLarge?.copyWith(color: orig.primaryColor),
+      ),
+    );
+  }
 }
 
 class BigWordPairCard extends StatelessWidget {
@@ -87,18 +92,7 @@ class BigWordPairCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final origTheme = Theme.of(context);
-    final theme = origTheme.copyWith(
-      textSelectionTheme: TextSelectionThemeData(
-        selectionColor: origTheme.colorScheme.inversePrimary,
-        selectionHandleColor: origTheme.colorScheme.onPrimary,
-      ),
-      textTheme: origTheme.primaryTextTheme.copyWith(
-        displaySmall: origTheme.primaryTextTheme.displaySmall?.copyWith(
-          letterSpacing: 2,
-        ),
-      ),
-    );
+    final ThemeData theme = _theme(context);
     return Theme(
       data: theme,
       child: Tooltip(
@@ -114,6 +108,21 @@ class BigWordPairCard extends StatelessWidget {
               enableInteractiveSelection: true,
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  ThemeData _theme(BuildContext context) {
+    final orig = Theme.of(context);
+    return orig.copyWith(
+      textSelectionTheme: TextSelectionThemeData(
+        selectionColor: orig.colorScheme.inversePrimary,
+        selectionHandleColor: orig.colorScheme.onPrimary,
+      ),
+      textTheme: orig.primaryTextTheme.copyWith(
+        displaySmall: orig.primaryTextTheme.displaySmall?.copyWith(
+          letterSpacing: 2,
         ),
       ),
     );
