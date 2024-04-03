@@ -78,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case 0:
         page = GeneratorPage();
       case 1:
-        page = Placeholder();
+        page = FavoritesPage();
       default:
         throw UnimplementedError('no widget with index $selectedIndex');
     }
@@ -129,6 +129,26 @@ class _MyHomePageState extends State<MyHomePage> {
         bodySmall: orig.textTheme.bodySmall?.copyWith(color: orig.primaryColor),
         bodyMedium: orig.textTheme.bodyMedium?.copyWith(color: orig.primaryColor),
         bodyLarge: orig.textTheme.bodyLarge?.copyWith(color: orig.primaryColor),
+      ),
+    );
+  }
+}
+
+class FavoritesPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var state = context.watch<MyAppState>();
+    return Align(
+      alignment: Alignment.topLeft,
+      child: SizedBox(
+        width: 200,
+        child: ListView(
+          padding: EdgeInsets.all(20),
+          children: [
+            Text('Favorites:', style: Theme.of(context).textTheme.headlineSmall),
+            for (var f in state.favorites) Text(f.asPascalCase),
+          ],
+        ),
       ),
     );
   }
