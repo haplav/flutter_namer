@@ -67,6 +67,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = _theme(context);
@@ -90,8 +92,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     label: const Text('Favorites'),
                   ),
                 ],
-                selectedIndex: 0,
-                onDestinationSelected: (value) => print('selected: $value'),
+                selectedIndex: selectedIndex,
+                onDestinationSelected: (value) => setState(() {
+                  selectedIndex = value;
+                }),
               ),
             ),
             Expanded(
