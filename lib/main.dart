@@ -77,7 +77,7 @@ class MyHomePage extends StatelessWidget {
               BigWordPairCard(appState.current),
               PreviousPairLabel(appState.previous),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   ElevatedButton.icon(
                     onPressed: appState.toggleFavorite,
