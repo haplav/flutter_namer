@@ -79,9 +79,10 @@ class MyHomePage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ElevatedButton(
+                  ElevatedButton.icon(
                     onPressed: appState.toggleFavorite,
-                    child: Text(appState.isFavorite() ? 'Dislike' : "Like"),
+                    label: Text(appState.isFavorite() ? 'Dislike' : "Like"),
+                    icon: Icon(appState.isFavorite() ? Icons.favorite : Icons.favorite_border),
                   ),
                   SizedBox(width: 10),
                   ElevatedButton(
