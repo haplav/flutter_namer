@@ -84,10 +84,10 @@ class MyHomePage extends StatelessWidget {
                     label: Text(appState.isFavorite() ? 'Dislike' : "Like"),
                     icon: Icon(appState.isFavorite() ? Icons.favorite : Icons.favorite_border),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   ElevatedButton(
                     onPressed: appState.next,
-                    child: Text('New Idea'),
+                    child: const Text('New Idea'),
                   ),
                 ],
               ),
