@@ -138,18 +138,21 @@ class FavoritesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var state = context.watch<MyAppState>();
-    var favorites = [
-      Text('Favorites', style: Theme.of(context).textTheme.headlineSmall),
+    List<Widget> favoritesUI = [
+      Text('You now ${state.favorites.length} favorites:', style: Theme.of(context).textTheme.bodyLarge),
     ];
-    favorites.addAll(state.favorites.map((f) => Text(f.asPascalCase)));
+    favoritesUI.addAll(state.favorites.map((f) => ListTile(
+          leading: const Icon(Icons.favorite),
+          title: Text(f.asPascalCase),
+        )));
 
     return Align(
       alignment: Alignment.topLeft,
       child: SizedBox(
-        width: 200,
+        width: 300,
         child: ListView(
           padding: EdgeInsets.all(20),
-          children: favorites,
+          children: favoritesUI,
         ),
       ),
     );
