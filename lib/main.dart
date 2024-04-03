@@ -64,36 +64,12 @@ class MyAppState extends ChangeNotifier {
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
     final ThemeData theme = _theme(context);
 
     return Theme(
       data: theme,
       child: Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              BigWordPairCard(appState.current),
-              PreviousPairLabel(appState.previous),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: appState.toggleFavorite,
-                    label: const Text("Like"),
-                    icon: Icon(appState.isFavorite() ? Icons.favorite : Icons.favorite_border),
-                  ),
-                  const SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: appState.next,
-                    child: const Text('New Idea'),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+        body: GeneratorPage(),
       ),
     );
   }
@@ -105,6 +81,38 @@ class MyHomePage extends StatelessWidget {
         bodySmall: orig.textTheme.bodySmall?.copyWith(color: orig.primaryColor),
         bodyMedium: orig.textTheme.bodyMedium?.copyWith(color: orig.primaryColor),
         bodyLarge: orig.textTheme.bodyLarge?.copyWith(color: orig.primaryColor),
+      ),
+    );
+  }
+}
+
+class GeneratorPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          BigWordPairCard(appState.current),
+          PreviousPairLabel(appState.previous),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton.icon(
+                onPressed: appState.toggleFavorite,
+                label: const Text("Like"),
+                icon: Icon(appState.isFavorite() ? Icons.favorite : Icons.favorite_border),
+              ),
+              const SizedBox(width: 10),
+              ElevatedButton(
+                onPressed: appState.next,
+                child: const Text('New Idea'),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
