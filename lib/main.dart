@@ -85,38 +85,40 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Theme(
       data: theme,
-      child: Scaffold(
-        body: Row(
-          children: [
-            SafeArea(
-              child: NavigationRail(
-                extended: false,
-                minExtendedWidth: 200,
-                destinations: [
-                  NavigationRailDestination(
-                    icon: const Icon(Icons.home),
-                    label: const Text('Home'),
-                  ),
-                  NavigationRailDestination(
-                    icon: const Icon(Icons.favorite),
-                    label: const Text('Favorites'),
-                  ),
-                ],
-                selectedIndex: selectedIndex,
-                onDestinationSelected: (value) => setState(() {
-                  selectedIndex = value;
-                }),
+      child: LayoutBuilder(builder: (context, constraints) {
+        return Scaffold(
+          body: Row(
+            children: [
+              SafeArea(
+                child: NavigationRail(
+                  extended: constraints.maxWidth >= 600,
+                  minExtendedWidth: 200,
+                  destinations: [
+                    NavigationRailDestination(
+                      icon: const Icon(Icons.home),
+                      label: const Text('Home'),
+                    ),
+                    NavigationRailDestination(
+                      icon: const Icon(Icons.favorite),
+                      label: const Text('Favorites'),
+                    ),
+                  ],
+                  selectedIndex: selectedIndex,
+                  onDestinationSelected: (value) => setState(() {
+                    selectedIndex = value;
+                  }),
+                ),
               ),
-            ),
-            Expanded(
-              child: Container(
-                color: theme.colorScheme.primaryContainer,
-                child: page,
+              Expanded(
+                child: Container(
+                  color: theme.colorScheme.primaryContainer,
+                  child: page,
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        );
+      }),
     );
   }
 
