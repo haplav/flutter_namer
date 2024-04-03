@@ -69,7 +69,34 @@ class MyHomePage extends StatelessWidget {
     return Theme(
       data: theme,
       child: Scaffold(
-        body: GeneratorPage(),
+        body: Row(
+          children: [
+            SafeArea(
+              child: NavigationRail(
+                extended: false,
+                minExtendedWidth: 200,
+                destinations: [
+                  NavigationRailDestination(
+                    icon: const Icon(Icons.home),
+                    label: const Text('Home'),
+                  ),
+                  NavigationRailDestination(
+                    icon: const Icon(Icons.favorite),
+                    label: const Text('Favorites'),
+                  ),
+                ],
+                selectedIndex: 0,
+                onDestinationSelected: (value) => print('selected: $value'),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                color: theme.colorScheme.primaryContainer,
+                child: GeneratorPage(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
