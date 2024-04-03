@@ -81,7 +81,7 @@ class MyHomePage extends StatelessWidget {
                 children: [
                   ElevatedButton.icon(
                     onPressed: appState.toggleFavorite,
-                    label: Text(appState.isFavorite() ? 'Dislike' : "Like"),
+                    label: const Text("Like"),
                     icon: Icon(appState.isFavorite() ? Icons.favorite : Icons.favorite_border),
                   ),
                   const SizedBox(width: 10),
