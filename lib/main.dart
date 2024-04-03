@@ -73,6 +73,16 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final ThemeData theme = _theme(context);
 
+    Widget page;
+    switch (selectedIndex) {
+      case 0:
+        page = GeneratorPage();
+      case 1:
+        page = Placeholder();
+      default:
+        throw UnimplementedError('no widget with index $selectedIndex');
+    }
+
     return Theme(
       data: theme,
       child: Scaffold(
@@ -101,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Expanded(
               child: Container(
                 color: theme.colorScheme.primaryContainer,
-                child: GeneratorPage(),
+                child: page,
               ),
             ),
           ],
