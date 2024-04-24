@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -166,7 +168,10 @@ class GeneratorPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          PreviousPairLabel(appState.previous),
+          Expanded(
+            child: History(appState.history),
+          ),
+          SizedBox(height: 10),
           BigWordPairCard(appState.current),
           SizedBox(height: 10),
           Row(
@@ -184,6 +189,7 @@ class GeneratorPage extends StatelessWidget {
               ),
             ],
           ),
+          Expanded(child: SizedBox())
         ],
       ),
     );
@@ -237,30 +243,30 @@ class BigWordPairCard extends StatelessWidget {
   }
 }
 
-class PreviousPairLabel extends StatelessWidget {
-  PreviousPairLabel(
-    this.previous, {
+class History extends StatelessWidget {
+  History(
+    this.history, {
     super.key,
   });
 
-  final WordPair? previous;
+  final List<WordPair> history;
+  static const numberOfLines = 8;
 
   @override
   Widget build(BuildContext context) {
     final TextStyle? textStyle = Theme.of(context).textTheme.bodySmall;
-    final double baseFontSize = textStyle?.fontSize ?? 14.0;
-    return SizedBox(
-      height: 3 * baseFontSize,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SelectableText(
-            previous != null ? "(previously: ${previous!.asPascalCase})" : "",
-            semanticsLabel: "${previous?.first} ${previous?.second}",
-            style: textStyle,
-          ),
-        ],
-      ),
+    var children = history
+        .sublist(max(0, history.length - numberOfLines))
+        .map(((e) => SelectableText(
+              e.asPascalCase,
+              semanticsLabel: "${e.first} ${e.second}",
+              style: textStyle,
+            )))
+        .toList(growable: false);
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: children,
     );
   }
 }
