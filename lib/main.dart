@@ -168,8 +168,9 @@ class GeneratorPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          BigWordPairCard(appState.current),
           PreviousPairLabel(appState.previous),
+          BigWordPairCard(appState.current),
+          SizedBox(height: 10),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
