@@ -25,36 +25,37 @@ class MyApp extends StatelessWidget {
   }
 }
 
-WordPair _generateWordPair() {
-  return WordPair.random();
-}
-
 class MyAppState extends ChangeNotifier {
-  WordPair? _previous;
-  WordPair _current = _generateWordPair();
-
-  WordPair? get previous => _previous;
-  WordPair get current => _current;
+  WordPair? _current;
+  var _history = <WordPair>[];
+  var _favorites = <WordPair>{};
 
   void next() {
-    _previous = _current;
-    _current = _generateWordPair();
+    if (_current != null) _history.add(_current!);
+    _current = WordPair.random();
     notifyListeners();
   }
 
-  var favorites = <WordPair>{};
+  MyAppState() {
+    next();
+  }
+
+  WordPair get current => _current!;
+  WordPair? get previous => _history.isNotEmpty ? _history.last : null;
+  List<WordPair> get history => _history;
+  Set<WordPair> get favorites => _favorites;
 
   void toggleFavorite() {
-    if (favorites.contains(current)) {
-      favorites.remove(current);
+    if (_favorites.contains(current)) {
+      _favorites.remove(current);
     } else {
-      favorites.add(current);
+      _favorites.add(current);
     }
     notifyListeners();
   }
 
   bool isFavorite() {
-    return favorites.contains(current);
+    return _favorites.contains(current);
   }
 }
 
