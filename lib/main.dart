@@ -40,7 +40,6 @@ class MyAppState extends ChangeNotifier {
     _previous = _current;
     _current = _generateWordPair();
     notifyListeners();
-    print('Got $_current');
   }
 
   var favorites = <WordPair>{};
@@ -48,10 +47,8 @@ class MyAppState extends ChangeNotifier {
   void toggleFavorite() {
     if (favorites.contains(current)) {
       favorites.remove(current);
-      print('$_current removed');
     } else {
       favorites.add(current);
-      print('$_current added');
     }
     notifyListeners();
   }
