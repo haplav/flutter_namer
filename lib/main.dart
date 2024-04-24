@@ -139,11 +139,12 @@ class FavoritesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var state = context.watch<MyAppState>();
     List<Widget> favoritesUI = [
-      Text('You now ${state.favorites.length} favorites:', style: Theme.of(context).textTheme.bodyLarge),
+      Text('You now have ${state.favorites.length} favorites:', style: Theme.of(context).textTheme.bodyLarge),
     ];
     favoritesUI.addAll(state.favorites.map((f) => ListTile(
           leading: const Icon(Icons.favorite),
-          title: Text(f.asPascalCase),
+          title: SelectableText(f.asPascalCase),
+          contentPadding: EdgeInsets.zero,
         )));
 
     return Align(
@@ -151,7 +152,7 @@ class FavoritesPage extends StatelessWidget {
       child: SizedBox(
         width: 300,
         child: ListView(
-          padding: EdgeInsets.all(20),
+          padding: EdgeInsets.all(10),
           children: favoritesUI,
         ),
       ),
