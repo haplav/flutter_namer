@@ -256,6 +256,8 @@ class History extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+
     final TextStyle? textStyle = Theme.of(context).textTheme.bodySmall;
     var children = history
         .sublist(max(0, history.length - numberOfLines))
@@ -263,7 +265,7 @@ class History extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
-                  Icons.favorite_border,
+                  appState.isFavorite(wp: e) ? Icons.favorite : Icons.favorite_border,
                   size: 15,
                 ),
                 Padding(
