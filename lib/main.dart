@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:english_words/english_words.dart';
@@ -28,10 +29,50 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class WordPairStorage {
+  String _filename;
+
+  WordPairStorage(this._filename);
+
+  String get filename => _filename;
+
+  Future<String> get localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
+
+  Future<File> get localFile async {
+    final path = await localPath;
+    return File('$path/$_filename');
+  }
+
+  Future<File> save(Iterable<WordPair> wordPairs) async {
+    final contents = wordPairs.map((pair) => "${pair.first} ${pair.second}").join('\n');
+    final file = await localFile;
+    file.writeAsString(contents);
+    return file;
+  }
+
+  Future<List<WordPair>> load() async {
+    final path = await localPath;
+    final file = File('$path/$_filename');
+    List<WordPair> list = <WordPair>[];
+    if (await file.exists()) {
+      final contents = await file.readAsString();
+      list = contents.split('\n').map((e) {
+        var words = e.split(' ');
+        return WordPair(words[0], words[1]);
+      }).toList();
+    }
+    return list;
+  }
+}
+
 class MyAppState extends ChangeNotifier {
   WordPair? _current;
   var _history = <WordPair>[];
   var _favorites = <WordPair>{};
+  var _favoritesStorage = WordPairStorage('favorites.txt');
 
   void next() {
     if (_current != null) _history.add(_current!);
@@ -40,6 +81,15 @@ class MyAppState extends ChangeNotifier {
   }
 
   MyAppState() {
+    // load favorites from file in the background
+    _favoritesStorage.load().then(
+      (list) {
+        _favorites.addAll(list);
+        notifyListeners();
+        print("Loaded favorites from file ${_favoritesStorage.filename}");
+      },
+      onError: (error) => print('Failed to load favorites: $error'),
+    );
     next();
   }
 
@@ -55,6 +105,7 @@ class MyAppState extends ChangeNotifier {
     } else {
       _favorites.add(wp);
     }
+    _favoritesStorage.save(_favorites).then((file) => print("Saved favorites to file: $file"));
     notifyListeners();
   }
 
