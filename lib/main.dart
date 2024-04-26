@@ -56,8 +56,9 @@ class MyAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool isFavorite() {
-    return _favorites.contains(current);
+  bool isFavorite({WordPair? wp}) {
+    wp ??= current;
+    return _favorites.contains(wp);
   }
 }
 
