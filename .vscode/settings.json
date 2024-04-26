@@ -1,3 +1,6 @@
 {
-    "dart.lineLength": 110
+    "dart.lineLength": 110,
+    "cSpell.words": [
+        "sublist"
+    ]
 }
