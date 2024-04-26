@@ -264,17 +264,17 @@ class History extends StatelessWidget {
         .map((e) => Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  appState.isFavorite(wp: e) ? Icons.favorite : Icons.favorite_border,
-                  size: 15,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: SelectableText(
+                TextButton.icon(
+                  onPressed: () => appState.toggleFavorite(wp: e),
+                  icon: Icon(
+                    appState.isFavorite(wp: e) ? Icons.favorite : Icons.favorite_border,
+                    size: 15,
+                  ),
+                  label: Text(
                     e.asPascalCase,
                     style: textStyle,
                   ),
-                ),
+                )
               ],
             ))
         .toList(growable: false);
