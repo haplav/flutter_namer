@@ -221,7 +221,6 @@ class BigWordPairCard extends StatelessWidget {
             child: SelectableText(
               wordPair.asPascalCase,
               style: theme.textTheme.displaySmall,
-              semanticsLabel: "${wordPair.first} ${wordPair.second}",
               enableInteractiveSelection: true,
             ),
           ),
@@ -273,7 +272,6 @@ class History extends StatelessWidget {
                   padding: const EdgeInsets.all(5.0),
                   child: SelectableText(
                     e.asPascalCase,
-                    semanticsLabel: "${e.first} ${e.second}",
                     style: textStyle,
                   ),
                 ),
