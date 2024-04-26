@@ -47,11 +47,12 @@ class MyAppState extends ChangeNotifier {
   List<WordPair> get history => _history;
   Set<WordPair> get favorites => _favorites;
 
-  void toggleFavorite() {
-    if (_favorites.contains(current)) {
-      _favorites.remove(current);
+  void toggleFavorite({WordPair? wp}) {
+    wp ??= current;
+    if (_favorites.contains(wp)) {
+      _favorites.remove(wp);
     } else {
-      _favorites.add(current);
+      _favorites.add(wp);
     }
     notifyListeners();
   }
