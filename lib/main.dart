@@ -258,11 +258,23 @@ class History extends StatelessWidget {
     final TextStyle? textStyle = Theme.of(context).textTheme.bodySmall;
     var children = history
         .sublist(max(0, history.length - numberOfLines))
-        .map(((e) => SelectableText(
-              e.asPascalCase,
-              semanticsLabel: "${e.first} ${e.second}",
-              style: textStyle,
-            )))
+        .map((e) => Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.favorite_border,
+                  size: 15,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: SelectableText(
+                    e.asPascalCase,
+                    semanticsLabel: "${e.first} ${e.second}",
+                    style: textStyle,
+                  ),
+                ),
+              ],
+            ))
         .toList(growable: false);
 
     return Column(
