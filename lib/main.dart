@@ -243,9 +243,10 @@ class GeneratorPage extends StatelessWidget {
                 icon: Icon(appState.isFavorite() ? Icons.favorite : Icons.favorite_border),
               ),
               const SizedBox(width: 10),
-              ElevatedButton(
+              ElevatedButton.icon(
                 onPressed: appState.next,
-                child: const Text('New Idea'),
+                icon: Icon(Icons.skip_next_rounded),
+                label: const Text('Next Idea'),
               ),
             ],
           ),
