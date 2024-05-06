@@ -193,7 +193,12 @@ class FavoritesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var state = context.watch<MyAppState>();
     List<Widget> favoritesUI = [
-      Text('You now have ${state.favorites.length} favorites:', style: Theme.of(context).textTheme.bodyLarge),
+      SafeArea(
+        child: Text(
+          'You now have ${state.favorites.length} favorites:',
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+      ),
     ];
     favoritesUI.addAll(state.favorites.map((f) => ListTile(
           leading: const Icon(Icons.favorite),
