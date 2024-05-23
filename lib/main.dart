@@ -10,6 +10,10 @@ void main() {
   runApp(const MyApp());
 }
 
+bool isDesktop() {
+  return Platform.isWindows || Platform.isLinux || Platform.isMacOS;
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -164,6 +168,7 @@ class _MyHomePageState extends State<MyHomePage> {
               SafeArea(
                 child: MyNavigationRail(
                   pages: pages,
+                  mediaQueryData: MediaQuery.of(context),
                   selectedIndex: _selectedIndex,
                   onDestinationSelected: (index) => _pageController.animateToPage(
                     index,
@@ -206,6 +211,7 @@ class MyNavigationRail extends NavigationRail {
     super.key,
     required List<PageConfig> pages,
     required super.onDestinationSelected,
+    required MediaQueryData mediaQueryData,
     required super.selectedIndex,
   }) : super(
           destinations: pages
@@ -217,7 +223,13 @@ class MyNavigationRail extends NavigationRail {
                     label: Text(e.title),
                   ))
               .toList(),
+          extended: useExtended(mediaQueryData),
+          minExtendedWidth: 175,
         );
+
+  static bool useExtended(MediaQueryData mediaQueryData) {
+    return isDesktop() && mediaQueryData.size.width > 600;
+  }
 }
 
 class FavoritesPage extends StatelessWidget {
