@@ -210,15 +210,7 @@ class MyNavigationRail extends NavigationRail {
     required MediaQueryData mediaQueryData,
     required super.selectedIndex,
   }) : super(
-          destinations: pages
-              .map((e) => NavigationRailDestination(
-                    icon: Tooltip(
-                      message: e.title,
-                      child: Icon(e.icon),
-                    ),
-                    label: Text(e.title),
-                  ))
-              .toList(),
+          destinations: pagesToDestinations(pages),
           extended: useExtended(mediaQueryData),
           minExtendedWidth: 175,
           onDestinationSelected: (index) => pageController.animateToPage(
@@ -230,6 +222,18 @@ class MyNavigationRail extends NavigationRail {
 
   static bool useExtended(MediaQueryData mediaQueryData) {
     return isDesktop() && mediaQueryData.size.width > 600;
+  }
+
+  static List<NavigationRailDestination> pagesToDestinations(List<PageConfig> pages) {
+    return pages
+        .map((e) => NavigationRailDestination(
+              icon: Tooltip(
+                message: e.title,
+                child: Icon(e.icon),
+              ),
+              label: Text(e.title),
+            ))
+        .toList();
   }
 }
 
