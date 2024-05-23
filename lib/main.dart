@@ -132,7 +132,21 @@ class _MyHomePageState extends State<MyHomePage> {
     (page: FavoritesPage(), icon: Icons.favorite, title: 'Favorites'),
   ];
 
+  late PageController _pageController;
+
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +154,6 @@ class _MyHomePageState extends State<MyHomePage> {
     if (_selectedIndex < 0 || _selectedIndex > pages.length - 1) {
       throw UnimplementedError('no widget with index $_selectedIndex');
     }
-    final Widget page = pages[_selectedIndex].page;
 
     return Theme(
       data: theme,
@@ -152,13 +165,21 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: MyNavigationRail(
                   pages: pages,
                   selectedIndex: _selectedIndex,
-                  onDestinationSelected: (value) => setState(() => _selectedIndex = value),
+                  onDestinationSelected: (index) => _pageController.animateToPage(
+                    index,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.fastOutSlowIn,
+                  ),
                 ),
               ),
               Expanded(
                 child: Container(
                   color: theme.colorScheme.primaryContainer,
-                  child: page,
+                  child: PageView(
+                    controller: _pageController,
+                    onPageChanged: (value) => setState(() => _selectedIndex = value),
+                    children: pages.map((e) => e.page).toList(),
+                  ),
                 ),
               ),
             ],
