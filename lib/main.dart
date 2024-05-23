@@ -210,7 +210,10 @@ class MyNavigationRail extends NavigationRail {
   }) : super(
           destinations: pages
               .map((e) => NavigationRailDestination(
-                    icon: Icon(e.icon),
+                    icon: Tooltip(
+                      message: e.title,
+                      child: Icon(e.icon),
+                    ),
                     label: Text(e.title),
                   ))
               .toList(),
