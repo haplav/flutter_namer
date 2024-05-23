@@ -120,22 +120,27 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+typedef PageConfig = ({
+  Widget page,
+  IconData icon,
+  String title,
+});
+
 class _MyHomePageState extends State<MyHomePage> {
+  final List<PageConfig> pages = [
+    (page: GeneratorPage(), icon: Icons.home, title: 'Home'),
+    (page: FavoritesPage(), icon: Icons.favorite, title: 'Favorites'),
+  ];
+
   int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = _theme(context);
-
-    Widget page;
-    switch (_selectedIndex) {
-      case 0:
-        page = GeneratorPage();
-      case 1:
-        page = FavoritesPage();
-      default:
-        throw UnimplementedError('no widget with index $_selectedIndex');
+    if (_selectedIndex < 0 || _selectedIndex > pages.length - 1) {
+      throw UnimplementedError('no widget with index $_selectedIndex');
     }
+    final Widget page = pages[_selectedIndex].page;
 
     return Theme(
       data: theme,
@@ -144,23 +149,10 @@ class _MyHomePageState extends State<MyHomePage> {
           body: Row(
             children: [
               SafeArea(
-                child: NavigationRail(
-                  extended: constraints.maxWidth >= 600,
-                  minExtendedWidth: 200,
-                  destinations: [
-                    NavigationRailDestination(
-                      icon: const Icon(Icons.home),
-                      label: const Text('Home'),
-                    ),
-                    NavigationRailDestination(
-                      icon: const Icon(Icons.favorite),
-                      label: const Text('Favorites'),
-                    ),
-                  ],
+                child: MyNavigationRail(
+                  pages: pages,
                   selectedIndex: _selectedIndex,
-                  onDestinationSelected: (value) => setState(() {
-                    _selectedIndex = value;
-                  }),
+                  onDestinationSelected: (value) => setState(() => _selectedIndex = value),
                 ),
               ),
               Expanded(
@@ -186,6 +178,22 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+}
+
+class MyNavigationRail extends NavigationRail {
+  MyNavigationRail({
+    super.key,
+    required List<PageConfig> pages,
+    required super.onDestinationSelected,
+    required super.selectedIndex,
+  }) : super(
+          destinations: pages
+              .map((e) => NavigationRailDestination(
+                    icon: Icon(e.icon),
+                    label: Text(e.title),
+                  ))
+              .toList(),
+        );
 }
 
 class FavoritesPage extends StatelessWidget {
