@@ -1,4 +1,4 @@
-# FlutterNamer
+# Flutter Namer
 
 My first Flutter project.
 

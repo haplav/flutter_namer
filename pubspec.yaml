@@ -1,4 +1,4 @@
-name: my_name_generator
+name: flutter_namer
 description: My first Flutter app per https://codelabs.developers.google.com/codelabs/flutter-codelab-first#2
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
