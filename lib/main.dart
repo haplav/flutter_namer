@@ -168,13 +168,9 @@ class _MyHomePageState extends State<MyHomePage> {
               SafeArea(
                 child: MyNavigationRail(
                   pages: pages,
+                  pageController: _pageController,
                   mediaQueryData: MediaQuery.of(context),
                   selectedIndex: _selectedIndex,
-                  onDestinationSelected: (index) => _pageController.animateToPage(
-                    index,
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.fastOutSlowIn,
-                  ),
                 ),
               ),
               Expanded(
@@ -210,7 +206,7 @@ class MyNavigationRail extends NavigationRail {
   MyNavigationRail({
     super.key,
     required List<PageConfig> pages,
-    required super.onDestinationSelected,
+    required PageController pageController,
     required MediaQueryData mediaQueryData,
     required super.selectedIndex,
   }) : super(
@@ -225,6 +221,11 @@ class MyNavigationRail extends NavigationRail {
               .toList(),
           extended: useExtended(mediaQueryData),
           minExtendedWidth: 175,
+          onDestinationSelected: (index) => pageController.animateToPage(
+            index,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.fastOutSlowIn,
+          ),
         );
 
   static bool useExtended(MediaQueryData mediaQueryData) {
