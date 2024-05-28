@@ -73,18 +73,22 @@ class WordPairStorage {
 }
 
 class MyAppState extends ChangeNotifier {
-  WordPair? _current;
+  WordPair _current;
   var _history = <WordPair>[];
   var _favorites = <WordPair>{};
   var _favoritesStorage = WordPairStorage('favorites.txt');
 
+  static WordPair _newPair() {
+    return WordPair.random();
+  }
+
   void next() {
-    if (_current != null) _history.add(_current!);
-    _current = WordPair.random();
+    _history.add(_current);
+    _current = _newPair();
     notifyListeners();
   }
 
-  MyAppState() {
+  MyAppState() : _current = _newPair() {
     // load favorites from file in the background
     _favoritesStorage.load().then(
       (list) {
@@ -97,7 +101,7 @@ class MyAppState extends ChangeNotifier {
     next();
   }
 
-  WordPair get current => _current!;
+  WordPair get current => _current;
   WordPair? get previous => _history.isNotEmpty ? _history.last : null;
   List<WordPair> get history => _history;
   Set<WordPair> get favorites => _favorites;
