@@ -102,7 +102,7 @@ class MyAppState extends ChangeNotifier {
   List<WordPair> get history => _history;
   Set<WordPair> get favorites => _favorites;
 
-  void toggleFavorite({WordPair? wp}) {
+  void toggleFavorite([WordPair? wp]) {
     wp ??= current;
     if (_favorites.contains(wp)) {
       _favorites.remove(wp);
@@ -113,7 +113,7 @@ class MyAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool isFavorite({WordPair? wp}) {
+  bool isFavorite([WordPair? wp]) {
     wp ??= current;
     return _favorites.contains(wp);
   }
@@ -372,9 +372,9 @@ class History extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextButton.icon(
-                  onPressed: () => appState.toggleFavorite(wp: e),
+                  onPressed: () => appState.toggleFavorite(e),
                   icon: Icon(
-                    appState.isFavorite(wp: e) ? Icons.favorite : Icons.favorite_border,
+                    appState.isFavorite(e) ? Icons.favorite : Icons.favorite_border,
                     size: 15,
                   ),
                   label: Text(
