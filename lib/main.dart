@@ -300,15 +300,15 @@ class FavoritesPage extends StatelessWidget {
           contentPadding: EdgeInsets.zero,
         )));
 
-    return Align(
-      alignment: Alignment.topLeft,
-      child: SizedBox(
-        width: 300,
-        child: ListView(
-          padding: EdgeInsets.all(10),
-          children: favoritesUI,
-        ),
+    return GridView(
+      padding: EdgeInsets.all(10),
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 300,
+        childAspectRatio: 300 / 50,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
       ),
+      children: favoritesUI,
     );
   }
 }
