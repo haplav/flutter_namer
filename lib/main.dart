@@ -283,32 +283,45 @@ class MyNavigation extends StatelessWidget {
 }
 
 class FavoritesPage extends StatelessWidget {
+  static const double spacing = 15.0;
+
   @override
   Widget build(BuildContext context) {
     var state = context.watch<MyAppState>();
-    List<Widget> favoritesUI = [
-      SafeArea(
-        child: Text(
-          'You now have ${state.favorites.length} favorites:',
-          style: Theme.of(context).textTheme.bodyLarge,
-        ),
-      ),
-    ];
-    favoritesUI.addAll(state.favorites.map((f) => ListTile(
+    List<Widget> favoritesUI = List.from(
+      state.favorites.map(
+        (f) => ListTile(
           leading: const Icon(Icons.favorite),
           title: SelectableText(f.asPascalCase),
           contentPadding: EdgeInsets.zero,
-        )));
-
-    return GridView(
-      padding: EdgeInsets.all(10),
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 300,
-        childAspectRatio: 300 / 50,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
+        ),
       ),
-      children: favoritesUI,
+    );
+
+    return Padding(
+      padding: const EdgeInsets.all(spacing),
+      child: Column(
+        children: [
+          SafeArea(
+            child: Text(
+              'You now have ${state.favorites.length} favorites:',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          ),
+          SizedBox(height: spacing),
+          Expanded(
+            child: GridView(
+              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 300,
+                childAspectRatio: 300 / 50,
+                crossAxisSpacing: spacing,
+                mainAxisSpacing: spacing,
+              ),
+              children: favoritesUI,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
