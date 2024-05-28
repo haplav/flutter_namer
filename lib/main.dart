@@ -146,8 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
 
   late PageController _pageController;
-
-  int _selectedIndex = 0;
+  int _pageIndex = 0;
 
   @override
   void initState() {
@@ -169,13 +168,13 @@ class _MyHomePageState extends State<MyHomePage> {
       color: theme.colorScheme.primaryContainer,
       child: PageView(
         controller: _pageController,
-        onPageChanged: (value) => setState(() => _selectedIndex = value),
+        onPageChanged: (value) => setState(() => _pageIndex = value),
         children: pages.map((e) => e.page).toList(),
       ),
     );
 
-    if (_selectedIndex < 0 || _selectedIndex > pages.length - 1) {
-      throw UnimplementedError('no widget with index $_selectedIndex');
+    if (_pageIndex < 0 || _pageIndex > pages.length - 1) {
+      throw UnimplementedError('no widget with index $_pageIndex');
     }
 
     return Theme(
@@ -184,7 +183,7 @@ class _MyHomePageState extends State<MyHomePage> {
         body: MyNavigation(
           pages: pages,
           pageController: _pageController,
-          selectedIndex: _selectedIndex,
+          selectedIndex: _pageIndex,
           mainArea: mainArea,
         ),
       ),
