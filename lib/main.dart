@@ -248,7 +248,7 @@ class MyNavigationRail extends StatelessWidget {
               ),
               label: Text(e.title),
             ))
-        .toList();
+        .toList(growable: false);
   }
 }
 
