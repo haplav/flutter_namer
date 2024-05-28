@@ -165,32 +165,30 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Theme(
       data: theme,
-      child: LayoutBuilder(builder: (context, constraints) {
-        return Scaffold(
-          body: Row(
-            children: [
-              SafeArea(
-                child: MyNavigation(
-                  pages: pages,
-                  pageController: _pageController,
-                  mediaQueryData: MediaQuery.of(context),
-                  selectedIndex: _selectedIndex,
+      child: Scaffold(
+        body: Row(
+          children: [
+            SafeArea(
+              child: MyNavigation(
+                pages: pages,
+                pageController: _pageController,
+                mediaQueryData: MediaQuery.of(context),
+                selectedIndex: _selectedIndex,
+              ),
+            ),
+            Expanded(
+              child: Container(
+                color: theme.colorScheme.primaryContainer,
+                child: PageView(
+                  controller: _pageController,
+                  onPageChanged: (value) => setState(() => _selectedIndex = value),
+                  children: pages.map((e) => e.page).toList(),
                 ),
               ),
-              Expanded(
-                child: Container(
-                  color: theme.colorScheme.primaryContainer,
-                  child: PageView(
-                    controller: _pageController,
-                    onPageChanged: (value) => setState(() => _selectedIndex = value),
-                    children: pages.map((e) => e.page).toList(),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      }),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
