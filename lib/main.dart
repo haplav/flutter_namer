@@ -170,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
           body: Row(
             children: [
               SafeArea(
-                child: MyNavigationRail(
+                child: MyNavigation(
                   pages: pages,
                   pageController: _pageController,
                   mediaQueryData: MediaQuery.of(context),
@@ -206,13 +206,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class MyNavigationRail extends StatelessWidget {
+class MyNavigation extends StatelessWidget {
   final List<PageConfig> pages;
   final PageController pageController;
   final MediaQueryData mediaQueryData;
   final int selectedIndex;
 
-  const MyNavigationRail({
+  const MyNavigation({
     super.key,
     required this.pages,
     required this.pageController,
