@@ -83,7 +83,7 @@ class MyAppState extends ChangeNotifier {
   }
 
   void next() {
-    _history.add(_current);
+    _history.insert(0, _current);
     _current = _newPair();
     notifyListeners();
   }
@@ -357,34 +357,36 @@ class BigWordPairCard extends StatelessWidget {
 class History extends StatelessWidget {
   History({super.key});
 
-  static const numberOfLines = 8;
+  TextButton _historyItemButton(MyAppState appState, WordPair e, TextStyle? textStyle) {
+    return TextButton.icon(
+      onPressed: () => appState.toggleFavorite(e),
+      icon: Icon(
+        appState.isFavorite(e) ? Icons.favorite : Icons.favorite_border,
+        size: 15,
+      ),
+      label: Text(
+        e.asPascalCase,
+        style: textStyle,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     List<WordPair> history = appState.history;
-
     final TextStyle? textStyle = Theme.of(context).textTheme.bodySmall;
-    var children = history
-        .sublist(max(0, history.length - numberOfLines))
-        .map((e) => Center(
-              child: TextButton.icon(
-                onPressed: () => appState.toggleFavorite(e),
-                icon: Icon(
-                  appState.isFavorite(e) ? Icons.favorite : Icons.favorite_border,
-                  size: 15,
-                ),
-                label: Text(
-                  e.asPascalCase,
-                  style: textStyle,
-                ),
-              ),
-            ))
-        .toList(growable: false);
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: children,
+    return ListView.builder(
+      padding: EdgeInsets.only(top: 50),
+      reverse: true,
+      prototypeItem: _historyItemButton(appState, appState.current, textStyle),
+      itemCount: appState._history.length,
+      itemBuilder: (context, index) {
+        return Center(
+          child: _historyItemButton(appState, history[index], textStyle),
+        );
+      },
     );
   }
 }
