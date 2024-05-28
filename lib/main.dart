@@ -281,9 +281,7 @@ class GeneratorPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Expanded(
-            child: History(appState.history),
-          ),
+          Expanded(child: History()),
           SizedBox(height: 10),
           BigWordPairCard(appState.current),
           SizedBox(height: 10),
@@ -357,17 +355,14 @@ class BigWordPairCard extends StatelessWidget {
 }
 
 class History extends StatelessWidget {
-  History(
-    this.history, {
-    super.key,
-  });
+  History({super.key});
 
-  final List<WordPair> history;
   static const numberOfLines = 8;
 
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
+    List<WordPair> history = appState.history;
 
     final TextStyle? textStyle = Theme.of(context).textTheme.bodySmall;
     var children = history
