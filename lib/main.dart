@@ -172,7 +172,6 @@ class _MyHomePageState extends State<MyHomePage> {
               child: MyNavigation(
                 pages: pages,
                 pageController: _pageController,
-                mediaQueryData: MediaQuery.of(context),
                 selectedIndex: _selectedIndex,
               ),
             ),
@@ -207,19 +206,19 @@ class _MyHomePageState extends State<MyHomePage> {
 class MyNavigation extends StatelessWidget {
   final List<PageConfig> pages;
   final PageController pageController;
-  final MediaQueryData mediaQueryData;
   final int selectedIndex;
 
   const MyNavigation({
     super.key,
     required this.pages,
     required this.pageController,
-    required this.mediaQueryData,
     required this.selectedIndex,
   });
 
   @override
   Widget build(BuildContext context) {
+    var mediaQueryData = MediaQuery.of(context);
+
     return NavigationRail(
       destinations: pagesToDestinations(pages),
       extended: useExtended(mediaQueryData),
