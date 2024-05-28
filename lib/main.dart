@@ -322,7 +322,7 @@ class GeneratorPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Expanded(child: History()),
+          Expanded(flex: 3, child: History()),
           SizedBox(height: 10),
           BigWordPairCard(appState.current),
           SizedBox(height: 10),
