@@ -324,23 +324,25 @@ class GeneratorPage extends StatelessWidget {
         children: [
           Expanded(flex: 3, child: History()),
           SizedBox(height: 10),
-          BigWordPairCard(appState.current),
+          FittedBox(child: BigWordPairCard(appState.current)),
           SizedBox(height: 10),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton.icon(
-                onPressed: appState.toggleFavorite,
-                label: const Text("Like"),
-                icon: Icon(appState.isFavorite() ? Icons.favorite : Icons.favorite_border),
-              ),
-              const SizedBox(width: 10),
-              ElevatedButton.icon(
-                onPressed: appState.next,
-                icon: Icon(Icons.skip_next_rounded),
-                label: const Text('Next Idea'),
-              ),
-            ],
+          FittedBox(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: appState.toggleFavorite,
+                  label: const Text("Like"),
+                  icon: Icon(appState.isFavorite() ? Icons.favorite : Icons.favorite_border),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton.icon(
+                  onPressed: appState.next,
+                  icon: Icon(Icons.skip_next_rounded),
+                  label: const Text('Next Idea'),
+                ),
+              ],
+            ),
           ),
           Expanded(child: SizedBox())
         ],
