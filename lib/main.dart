@@ -206,23 +206,34 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class MyNavigationRail extends NavigationRail {
-  MyNavigationRail({
+class MyNavigationRail extends StatelessWidget {
+  final List<PageConfig> pages;
+  final PageController pageController;
+  final MediaQueryData mediaQueryData;
+  final int selectedIndex;
+
+  const MyNavigationRail({
     super.key,
-    required List<PageConfig> pages,
-    required PageController pageController,
-    required MediaQueryData mediaQueryData,
-    required super.selectedIndex,
-  }) : super(
-          destinations: pagesToDestinations(pages),
-          extended: useExtended(mediaQueryData),
-          minExtendedWidth: 175,
-          onDestinationSelected: (index) => pageController.animateToPage(
-            index,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.fastOutSlowIn,
-          ),
-        );
+    required this.pages,
+    required this.pageController,
+    required this.mediaQueryData,
+    required this.selectedIndex,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return NavigationRail(
+      destinations: pagesToDestinations(pages),
+      extended: useExtended(mediaQueryData),
+      minExtendedWidth: 175,
+      onDestinationSelected: (index) => pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.fastOutSlowIn,
+      ),
+      selectedIndex: selectedIndex,
+    );
+  }
 
   static bool useExtended(MediaQueryData mediaQueryData) {
     return isDesktop() && mediaQueryData.size.width > 600;
