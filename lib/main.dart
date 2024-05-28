@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +11,18 @@ void main() {
 
 bool isDesktop() {
   return Platform.isWindows || Platform.isLinux || Platform.isMacOS;
+}
+
+typedef PageConfig = ({
+  Widget page,
+  IconData icon,
+  String title,
+});
+
+typedef PageConfigToItem<D> = D Function(PageConfig);
+
+List<T> pagesToDestinations<T>(List<PageConfig> pages, PageConfigToItem<T> factory) {
+  return pages.map((e) => factory(e)).toList(growable: false);
 }
 
 class MyApp extends StatelessWidget {
@@ -128,12 +139,6 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-typedef PageConfig = ({
-  Widget page,
-  IconData icon,
-  String title,
-});
-
 class _MyHomePageState extends State<MyHomePage> {
   final List<PageConfig> pages = [
     (page: GeneratorPage(), icon: Icons.home, title: 'Home'),
@@ -159,6 +164,16 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = _theme(context);
+
+    var mainArea = Container(
+      color: theme.colorScheme.primaryContainer,
+      child: PageView(
+        controller: _pageController,
+        onPageChanged: (value) => setState(() => _selectedIndex = value),
+        children: pages.map((e) => e.page).toList(),
+      ),
+    );
+
     if (_selectedIndex < 0 || _selectedIndex > pages.length - 1) {
       throw UnimplementedError('no widget with index $_selectedIndex');
     }
@@ -166,26 +181,11 @@ class _MyHomePageState extends State<MyHomePage> {
     return Theme(
       data: theme,
       child: Scaffold(
-        body: Row(
-          children: [
-            SafeArea(
-              child: MyNavigation(
-                pages: pages,
-                pageController: _pageController,
-                selectedIndex: _selectedIndex,
-              ),
-            ),
-            Expanded(
-              child: Container(
-                color: theme.colorScheme.primaryContainer,
-                child: PageView(
-                  controller: _pageController,
-                  onPageChanged: (value) => setState(() => _selectedIndex = value),
-                  children: pages.map((e) => e.page).toList(),
-                ),
-              ),
-            ),
-          ],
+        body: MyNavigation(
+          pages: pages,
+          pageController: _pageController,
+          selectedIndex: _selectedIndex,
+          mainArea: mainArea,
         ),
       ),
     );
@@ -207,46 +207,79 @@ class MyNavigation extends StatelessWidget {
   final List<PageConfig> pages;
   final PageController pageController;
   final int selectedIndex;
+  final Widget mainArea;
 
   const MyNavigation({
     super.key,
     required this.pages,
     required this.pageController,
     required this.selectedIndex,
+    required this.mainArea,
   });
 
   @override
   Widget build(BuildContext context) {
-    var mediaQueryData = MediaQuery.of(context);
+    var width = MediaQuery.of(context).size.width;
 
+    if (width < 450) {
+      return Column(
+        children: [
+          Expanded(child: mainArea),
+          SafeArea(child: buildBottomNav()),
+        ],
+      );
+    } else {
+      return Row(
+        children: [
+          SafeArea(child: buildSideNav(extended: width > 600)),
+          Expanded(child: mainArea),
+        ],
+      );
+    }
+  }
+
+  NavigationRail buildSideNav({required bool extended}) {
     return NavigationRail(
-      destinations: pagesToDestinations(pages),
-      extended: useExtended(mediaQueryData),
+      extended: extended,
       minExtendedWidth: 175,
-      onDestinationSelected: (index) => pageController.animateToPage(
-        index,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.fastOutSlowIn,
-      ),
+      onDestinationSelected: _onSelected,
       selectedIndex: selectedIndex,
+      destinations: pagesToDestinations(
+        pages,
+        (p) => NavigationRailDestination(
+          icon: _pageToIcon(p),
+          label: Text(p.title),
+        ),
+      ),
     );
   }
 
-  static bool useExtended(MediaQueryData mediaQueryData) {
-    return isDesktop() && mediaQueryData.size.width > 600;
+  BottomNavigationBar buildBottomNav() {
+    return BottomNavigationBar(
+      onTap: _onSelected,
+      currentIndex: selectedIndex,
+      items: pagesToDestinations(
+        pages,
+        (p) => BottomNavigationBarItem(
+          icon: _pageToIcon(p),
+          label: p.title,
+        ),
+      ),
+    );
   }
 
-  static List<NavigationRailDestination> pagesToDestinations(List<PageConfig> pages) {
-    return pages
-        .map((e) => NavigationRailDestination(
-              icon: Tooltip(
-                message: e.title,
-                child: Icon(e.icon),
-              ),
-              label: Text(e.title),
-            ))
-        .toList(growable: false);
+  void _onSelected(index) {
+    pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.fastOutSlowIn,
+    );
   }
+
+  static Tooltip _pageToIcon(PageConfig e) => Tooltip(
+        message: e.title,
+        child: Icon(e.icon),
+      );
 }
 
 class FavoritesPage extends StatelessWidget {
