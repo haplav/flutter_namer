@@ -372,21 +372,18 @@ class History extends StatelessWidget {
     final TextStyle? textStyle = Theme.of(context).textTheme.bodySmall;
     var children = history
         .sublist(max(0, history.length - numberOfLines))
-        .map((e) => Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextButton.icon(
-                  onPressed: () => appState.toggleFavorite(e),
-                  icon: Icon(
-                    appState.isFavorite(e) ? Icons.favorite : Icons.favorite_border,
-                    size: 15,
-                  ),
-                  label: Text(
-                    e.asPascalCase,
-                    style: textStyle,
-                  ),
-                )
-              ],
+        .map((e) => Center(
+              child: TextButton.icon(
+                onPressed: () => appState.toggleFavorite(e),
+                icon: Icon(
+                  appState.isFavorite(e) ? Icons.favorite : Icons.favorite_border,
+                  size: 15,
+                ),
+                label: Text(
+                  e.asPascalCase,
+                  style: textStyle,
+                ),
+              ),
             ))
         .toList(growable: false);
 
