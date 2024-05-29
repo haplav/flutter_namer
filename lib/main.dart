@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:io';
 
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
@@ -8,10 +7,6 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
-}
-
-bool isDesktop() {
-  return Platform.isWindows || Platform.isLinux || Platform.isMacOS;
 }
 
 typedef PageConfig = ({
