@@ -1,3 +1,4 @@
+import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_namer/state.dart';
 import 'package:provider/provider.dart';
@@ -14,17 +15,10 @@ class FavoritesPage extends StatelessWidget {
 
     final List<Widget> favoritesUI = state.favorites
         .map(
-          (f) => ListTile(
-            leading: Icon(
-              Icons.favorite,
-              color: theme.primaryColor,
-              size: tileTextStyle?.fontSize ?? 16,
-            ),
-            title: SelectableText(
-              f.asPascalCase,
-              style: tileTextStyle,
-            ),
-            contentPadding: EdgeInsets.zero,
+          (e) => FavoriteTile(
+            iconColor: theme.primaryColor,
+            tileTextStyle: tileTextStyle,
+            wordPair: e,
           ),
         )
         .toList(growable: false);
@@ -53,6 +47,35 @@ class FavoritesPage extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class FavoriteTile extends StatelessWidget {
+  const FavoriteTile({
+    super.key,
+    required this.iconColor,
+    required this.tileTextStyle,
+    required this.wordPair,
+  });
+
+  final Color iconColor;
+  final TextStyle? tileTextStyle;
+  final WordPair wordPair;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(
+        Icons.favorite,
+        color: iconColor,
+        size: tileTextStyle?.fontSize ?? 16,
+      ),
+      title: SelectableText(
+        wordPair.asPascalCase,
+        style: tileTextStyle,
+      ),
+      contentPadding: EdgeInsets.zero,
     );
   }
 }
