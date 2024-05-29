@@ -54,9 +54,9 @@ class MyApp extends StatelessWidget {
 }
 
 class WordPairStorage {
-  String _filename;
-
   WordPairStorage(this._filename);
+
+  String _filename;
 
   String get filename => _filename;
 
@@ -93,21 +93,6 @@ class WordPairStorage {
 }
 
 class MyAppState extends ChangeNotifier {
-  WordPair _current;
-  var _history = <WordPair>[];
-  var _favorites = <WordPair>{};
-  var _favoritesStorage = WordPairStorage('favorites.txt');
-
-  static WordPair _newPair() {
-    return WordPair.random();
-  }
-
-  void next() {
-    _history.insert(0, _current);
-    _current = _newPair();
-    notifyListeners();
-  }
-
   MyAppState() : _current = _newPair() {
     // load favorites from file in the background
     _favoritesStorage.load().then(
@@ -121,10 +106,25 @@ class MyAppState extends ChangeNotifier {
     next();
   }
 
+  WordPair _current;
+  var _history = <WordPair>[];
+  var _favorites = <WordPair>{};
+  var _favoritesStorage = WordPairStorage('favorites.txt');
+
   WordPair get current => _current;
   WordPair? get previous => _history.isNotEmpty ? _history.last : null;
   List<WordPair> get history => _history;
   Set<WordPair> get favorites => _favorites;
+
+  static WordPair _newPair() {
+    return WordPair.random();
+  }
+
+  void next() {
+    _history.insert(0, _current);
+    _current = _newPair();
+    notifyListeners();
+  }
 
   void toggleFavorite([WordPair? wp]) {
     wp ??= current;
