@@ -12,22 +12,22 @@ class FavoritesPage extends StatelessWidget {
     final tileTextStyle = theme.textTheme.bodyLarge;
     final headlineTextStyle = theme.textTheme.headlineMedium;
 
-    final List<Widget> favoritesUI = List.from(
-      state.favorites.map(
-        (f) => ListTile(
-          leading: Icon(
-            Icons.favorite,
-            color: theme.primaryColor,
-            size: tileTextStyle?.fontSize ?? 16,
+    final List<Widget> favoritesUI = state.favorites
+        .map(
+          (f) => ListTile(
+            leading: Icon(
+              Icons.favorite,
+              color: theme.primaryColor,
+              size: tileTextStyle?.fontSize ?? 16,
+            ),
+            title: SelectableText(
+              f.asPascalCase,
+              style: tileTextStyle,
+            ),
+            contentPadding: EdgeInsets.zero,
           ),
-          title: SelectableText(
-            f.asPascalCase,
-            style: tileTextStyle,
-          ),
-          contentPadding: EdgeInsets.zero,
-        ),
-      ),
-    );
+        )
+        .toList(growable: false);
 
     return Padding(
       padding: const EdgeInsets.all(spacing),
