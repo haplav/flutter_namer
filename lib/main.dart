@@ -34,13 +34,25 @@ class MyApp extends StatelessWidget {
       create: (context) => MyAppState(),
       child: MaterialApp(
         title: 'My Name Generator App',
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrangeAccent),
+        theme: _theme(),
+        home: Scaffold(
+          body: MyHomePage(),
         ),
-        home: MyHomePage(),
       ),
     );
+  }
+
+  ThemeData _theme() {
+    var theme = ThemeData(
+      useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrangeAccent),
+    );
+    var tt = theme.textTheme;
+    tt = tt.apply(
+      bodyColor: theme.primaryColor,
+      displayColor: theme.primaryColor,
+    );
+    return theme.copyWith(textTheme: tt);
   }
 }
 
@@ -162,9 +174,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = _theme(context);
+    final theme = Theme.of(context);
+    final width = MediaQuery.of(context).size.width;
 
-    var mainArea = Container(
+    final mainArea = Container(
       color: theme.colorScheme.primaryContainer,
       child: PageView(
         controller: _pageController,
@@ -176,49 +189,6 @@ class _MyHomePageState extends State<MyHomePage> {
     if (_pageIndex < 0 || _pageIndex > pages.length - 1) {
       throw UnimplementedError('no widget with index $_pageIndex');
     }
-
-    return Theme(
-      data: theme,
-      child: Scaffold(
-        body: MyNavigation(
-          pages: pages,
-          pageController: _pageController,
-          selectedIndex: _pageIndex,
-          mainArea: mainArea,
-        ),
-      ),
-    );
-  }
-
-  ThemeData _theme(BuildContext context) {
-    final orig = Theme.of(context);
-    return orig.copyWith(
-      textTheme: orig.textTheme.copyWith(
-        bodySmall: orig.textTheme.bodySmall?.copyWith(color: orig.primaryColor),
-        bodyMedium: orig.textTheme.bodyMedium?.copyWith(color: orig.primaryColor),
-        bodyLarge: orig.textTheme.bodyLarge?.copyWith(color: orig.primaryColor),
-      ),
-    );
-  }
-}
-
-class MyNavigation extends StatelessWidget {
-  final List<PageConfig> pages;
-  final PageController pageController;
-  final int selectedIndex;
-  final Widget mainArea;
-
-  const MyNavigation({
-    super.key,
-    required this.pages,
-    required this.pageController,
-    required this.selectedIndex,
-    required this.mainArea,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
 
     if (width < 450) {
       return Column(
@@ -242,7 +212,7 @@ class MyNavigation extends StatelessWidget {
       extended: extended,
       minExtendedWidth: 175,
       onDestinationSelected: _onSelected,
-      selectedIndex: selectedIndex,
+      selectedIndex: _pageIndex,
       destinations: pagesToDestinations(
         pages,
         (p) => NavigationRailDestination(
@@ -256,7 +226,7 @@ class MyNavigation extends StatelessWidget {
   BottomNavigationBar buildBottomNav() {
     return BottomNavigationBar(
       onTap: _onSelected,
-      currentIndex: selectedIndex,
+      currentIndex: _pageIndex,
       items: pagesToDestinations(
         pages,
         (p) => BottomNavigationBarItem(
@@ -268,7 +238,7 @@ class MyNavigation extends StatelessWidget {
   }
 
   void _onSelected(index) {
-    pageController.animateToPage(
+    _pageController.animateToPage(
       index,
       duration: const Duration(milliseconds: 500),
       curve: Curves.fastOutSlowIn,
