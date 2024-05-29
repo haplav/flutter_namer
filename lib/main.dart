@@ -308,35 +308,34 @@ class GeneratorPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
 
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(flex: 3, child: History()),
-          SizedBox(height: 10),
-          FittedBox(child: BigWordPairCard(appState.current)),
-          SizedBox(height: 10),
-          FittedBox(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: appState.toggleFavorite,
-                  label: const Text("Like"),
-                  icon: Icon(appState.isFavorite() ? Icons.favorite : Icons.favorite_border),
-                ),
-                const SizedBox(width: 10),
-                ElevatedButton.icon(
-                  onPressed: appState.next,
-                  icon: Icon(Icons.skip_next_rounded),
-                  label: const Text('Next Idea'),
-                ),
-              ],
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Expanded(flex: 3, child: History()),
+        SizedBox(height: 10),
+        FittedBox(child: BigWordPairCard(appState.current)),
+        SizedBox(height: 10),
+        FittedBox(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton.icon(
+                onPressed: appState.toggleFavorite,
+                label: const Text("Like"),
+                icon: Icon(appState.isFavorite() ? Icons.favorite : Icons.favorite_border),
+              ),
+              const SizedBox(width: 10),
+              ElevatedButton.icon(
+                onPressed: appState.next,
+                icon: Icon(Icons.skip_next_rounded),
+                label: const Text('Next Idea'),
+              ),
+            ],
           ),
-          Expanded(child: SizedBox())
-        ],
-      ),
+        ),
+        Expanded(child: SizedBox())
+      ],
     );
   }
 }
