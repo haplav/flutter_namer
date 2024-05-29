@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:io';
 
 import 'package:english_words/english_words.dart';
@@ -113,8 +114,8 @@ class MyAppState extends ChangeNotifier {
 
   WordPair get current => _current;
   WordPair? get previous => _history.isNotEmpty ? _history.last : null;
-  List<WordPair> get history => _history;
-  Set<WordPair> get favorites => _favorites;
+  UnmodifiableListView<WordPair> get history => UnmodifiableListView(_history);
+  UnmodifiableSetView<WordPair> get favorites => UnmodifiableSetView(_favorites);
 
   static WordPair _newPair() {
     return WordPair.random();
