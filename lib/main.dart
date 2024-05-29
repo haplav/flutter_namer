@@ -66,7 +66,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
+    _pageController = PageController(
+      initialPage: _pageIndex,
+    );
   }
 
   @override
@@ -84,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
       color: theme.colorScheme.primaryContainer,
       child: PageView(
         controller: _pageController,
-        onPageChanged: (value) => setState(() => _pageIndex = value),
+        onPageChanged: _setPage,
         children: pages.map((e) => e.page).toList(),
       ),
     );
@@ -114,7 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return NavigationRail(
       extended: extended,
       minExtendedWidth: 175,
-      onDestinationSelected: _onSelected,
+      onDestinationSelected: _animateToPage,
       selectedIndex: _pageIndex,
       destinations: pagesToDestinations(
         pages,
@@ -128,7 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   BottomNavigationBar buildBottomNav() {
     return BottomNavigationBar(
-      onTap: _onSelected,
+      onTap: _animateToPage,
       currentIndex: _pageIndex,
       items: pagesToDestinations(
         pages,
@@ -140,12 +142,20 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _onSelected(index) {
+  void _setPage(int index) {
+    setState(() {
+      print('_MyHomePageState: selected $index');
+      _pageIndex = index;
+    });
+  }
+
+  void _animateToPage(int index) {
     _pageController.animateToPage(
       index,
       duration: const Duration(milliseconds: 500),
       curve: Curves.fastOutSlowIn,
     );
+    // no need to call _setPage as it's already called by the PageView
   }
 
   static Tooltip _pageToIcon(PageConfig e) => Tooltip(
