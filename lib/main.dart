@@ -10,17 +10,26 @@ void main() {
   runApp(const MyApp());
 }
 
+enum PageType {
+  generator,
+  favorites,
+}
+
 typedef PageConfig = ({
-  Widget page,
-  IconData icon,
   String title,
+  IconData icon,
 });
 
-typedef PageConfigToItem<D> = D Function(PageConfig);
-
-List<T> pagesToDestinations<T>(List<PageConfig> pages, PageConfigToItem<T> factory) {
-  return pages.map((e) => factory(e)).toList(growable: false);
-}
+const Map<PageType, PageConfig> pagesSpec = {
+  PageType.generator: (
+    title: 'Generator',
+    icon: Icons.home,
+  ),
+  PageType.favorites: (
+    title: 'Favorites',
+    icon: Icons.favorite,
+  ),
+};
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -57,15 +66,13 @@ class MyHomePage extends StatefulWidget {
     MyAppState appState, {
     super.key,
   }) {
-    _pages.addAll([
-      (page: GeneratorPage(), icon: Icons.home, title: 'Home'),
-      (page: FavoritesPage(favorites: appState.favorites), icon: Icons.favorite, title: 'Favorites'),
-    ]);
+    _pages[PageType.generator] = GeneratorPage();
+    _pages[PageType.favorites] = FavoritesPage(favorites: appState.favorites);
   }
 
-  final List<PageConfig> _pages = [];
+  final Map<PageType, Widget> _pages = {};
 
-  UnmodifiableListView<PageConfig> get pages => UnmodifiableListView(_pages);
+  UnmodifiableMapView<PageType, Widget> get pages => UnmodifiableMapView(_pages);
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -99,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
       child: PageView(
         controller: _pageController,
         onPageChanged: _setPage,
-        children: pages.map((e) => e.page).toList(),
+        children: pages.values.toList(),
       ),
     );
 
@@ -111,46 +118,48 @@ class _MyHomePageState extends State<MyHomePage> {
       return Column(
         children: [
           Expanded(child: mainArea),
-          SafeArea(child: buildBottomNav(pages)),
+          SafeArea(child: buildBottomNav()),
         ],
       );
     } else {
       return Row(
         children: [
-          SafeArea(child: buildSideNav(pages, extended: width > 600)),
+          SafeArea(child: buildSideNav(extended: width > 600)),
           Expanded(child: mainArea),
         ],
       );
     }
   }
 
-  NavigationRail buildSideNav(List<PageConfig> pages, {required bool extended}) {
+  NavigationRail buildSideNav({required bool extended}) {
     return NavigationRail(
       extended: extended,
       minExtendedWidth: 175,
       onDestinationSelected: _animateToPage,
       selectedIndex: _pageIndex,
-      destinations: pagesToDestinations(
-        pages,
-        (p) => NavigationRailDestination(
-          icon: _pageToIcon(p),
-          label: Text(p.title),
-        ),
-      ),
+      destinations: pagesSpec.values
+          .map(
+            (p) => NavigationRailDestination(
+              icon: _pageToIcon(p),
+              label: Text(p.title),
+            ),
+          )
+          .toList(),
     );
   }
 
-  BottomNavigationBar buildBottomNav(List<PageConfig> pages) {
+  BottomNavigationBar buildBottomNav() {
     return BottomNavigationBar(
       onTap: _animateToPage,
       currentIndex: _pageIndex,
-      items: pagesToDestinations(
-        pages,
-        (p) => BottomNavigationBarItem(
-          icon: _pageToIcon(p),
-          label: p.title,
-        ),
-      ),
+      items: pagesSpec.values
+          .map(
+            (p) => BottomNavigationBarItem(
+              icon: _pageToIcon(p),
+              label: p.title,
+            ),
+          )
+          .toList(),
     );
   }
 
