@@ -55,11 +55,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<PageConfig> pages = [
-    (page: GeneratorPage(), icon: Icons.home, title: 'Home'),
-    (page: FavoritesPage(), icon: Icons.favorite, title: 'Favorites'),
-  ];
-
   late PageController _pageController;
   int _pageIndex = 0;
 
@@ -79,8 +74,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final state = context.watch<MyAppState>();
     final theme = Theme.of(context);
     final width = MediaQuery.of(context).size.width;
+
+    final pages = [
+      (page: GeneratorPage(), icon: Icons.home, title: 'Home'),
+      (page: FavoritesPage(favorites: state.favorites), icon: Icons.favorite, title: 'Favorites'),
+    ];
 
     final mainArea = Container(
       color: theme.colorScheme.primaryContainer,
@@ -99,20 +100,20 @@ class _MyHomePageState extends State<MyHomePage> {
       return Column(
         children: [
           Expanded(child: mainArea),
-          SafeArea(child: buildBottomNav()),
+          SafeArea(child: buildBottomNav(pages)),
         ],
       );
     } else {
       return Row(
         children: [
-          SafeArea(child: buildSideNav(extended: width > 600)),
+          SafeArea(child: buildSideNav(pages, extended: width > 600)),
           Expanded(child: mainArea),
         ],
       );
     }
   }
 
-  NavigationRail buildSideNav({required bool extended}) {
+  NavigationRail buildSideNav(List<PageConfig> pages, {required bool extended}) {
     return NavigationRail(
       extended: extended,
       minExtendedWidth: 175,
@@ -128,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  BottomNavigationBar buildBottomNav() {
+  BottomNavigationBar buildBottomNav(List<PageConfig> pages) {
     return BottomNavigationBar(
       onTap: _animateToPage,
       currentIndex: _pageIndex,
