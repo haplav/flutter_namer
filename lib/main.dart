@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:flutter_namer/favorites_page.dart';
-import 'package:flutter_namer/generator_page.dart';
-import 'package:flutter_namer/state.dart';
+import 'favorites_page.dart';
+import 'generator_page.dart';
+import 'state.dart';
 
 void main() {
   runApp(const MyApp());
