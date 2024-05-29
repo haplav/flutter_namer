@@ -414,7 +414,7 @@ class History extends StatelessWidget {
       padding: EdgeInsets.only(top: 50),
       reverse: true,
       prototypeItem: _historyItemButton(appState, appState.current, textStyle),
-      itemCount: appState._history.length,
+      itemCount: history.length,
       itemBuilder: (context, index) {
         return Center(
           child: _historyItemButton(appState, history[index], textStyle),
