@@ -1,3 +1,4 @@
+import "dart:collection";
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -32,7 +33,9 @@ class MyApp extends StatelessWidget {
         title: 'My Name Generator App',
         theme: _theme(),
         home: Scaffold(
-          body: MyHomePage(),
+          body: Builder(builder: (context) {
+            return MyHomePage(Provider.of<MyAppState>(context, listen: false));
+          }),
         ),
       ),
     );
@@ -50,6 +53,20 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
+  MyHomePage(
+    MyAppState appState, {
+    super.key,
+  }) {
+    _pages.addAll([
+      (page: GeneratorPage(), icon: Icons.home, title: 'Home'),
+      (page: FavoritesPage(favorites: appState.favorites), icon: Icons.favorite, title: 'Favorites'),
+    ]);
+  }
+
+  final List<PageConfig> _pages = [];
+
+  UnmodifiableListView<PageConfig> get pages => UnmodifiableListView(_pages);
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -74,15 +91,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.watch<MyAppState>();
+    final pages = widget.pages;
     final theme = Theme.of(context);
     final width = MediaQuery.of(context).size.width;
-
-    final pages = [
-      (page: GeneratorPage(), icon: Icons.home, title: 'Home'),
-      (page: FavoritesPage(favorites: state.favorites), icon: Icons.favorite, title: 'Favorites'),
-    ];
-
     final mainArea = Container(
       color: theme.colorScheme.primaryContainer,
       child: PageView(
