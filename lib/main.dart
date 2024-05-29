@@ -48,10 +48,7 @@ class MyApp extends StatelessWidget {
       colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrangeAccent),
     );
     var tt = theme.textTheme;
-    tt = tt.apply(
-      bodyColor: theme.primaryColor,
-      displayColor: theme.primaryColor,
-    );
+    tt = tt.apply(displayColor: theme.primaryColor);
     return theme.copyWith(textTheme: tt);
   }
 }
@@ -256,12 +253,23 @@ class FavoritesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var state = context.watch<MyAppState>();
-    List<Widget> favoritesUI = List.from(
+    final state = context.watch<MyAppState>();
+    final theme = Theme.of(context);
+    final tileTextStyle = theme.textTheme.bodyLarge;
+    final headlineTextStyle = theme.textTheme.headlineMedium;
+
+    final List<Widget> favoritesUI = List.from(
       state.favorites.map(
         (f) => ListTile(
-          leading: const Icon(Icons.favorite),
-          title: SelectableText(f.asPascalCase),
+          leading: Icon(
+            Icons.favorite,
+            color: theme.primaryColor,
+            size: tileTextStyle?.fontSize ?? 16,
+          ),
+          title: SelectableText(
+            f.asPascalCase,
+            style: tileTextStyle,
+          ),
           contentPadding: EdgeInsets.zero,
         ),
       ),
@@ -274,7 +282,7 @@ class FavoritesPage extends StatelessWidget {
           SafeArea(
             child: Text(
               'You now have ${state.favorites.length} favorites:',
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: headlineTextStyle,
             ),
           ),
           SizedBox(height: spacing),
@@ -387,7 +395,7 @@ class History extends StatelessWidget {
       onPressed: () => appState.toggleFavorite(e),
       icon: Icon(
         appState.isFavorite(e) ? Icons.favorite : Icons.favorite_border,
-        size: 15,
+        size: textStyle?.fontSize ?? 15,
       ),
       label: Text(
         e.asPascalCase,
@@ -400,7 +408,7 @@ class History extends StatelessWidget {
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     List<WordPair> history = appState.history;
-    final TextStyle? textStyle = Theme.of(context).textTheme.bodySmall;
+    final TextStyle? textStyle = Theme.of(context).textTheme.bodyMedium;
 
     return ListView.builder(
       padding: EdgeInsets.only(top: 50),
