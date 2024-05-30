@@ -59,9 +59,9 @@ class MyAppState extends ChangeNotifier {
   }
 
   WordPair _current;
-  var _history = <WordPair>[];
-  var _favorites = <WordPair>{};
-  var _favoritesStorage = WordPairStorage('favorites.txt');
+  final _history = <WordPair>[];
+  final _favorites = <WordPair>{};
+  final _favoritesStorage = WordPairStorage('favorites.txt');
 
   WordPair get current => _current;
   WordPair? get previous => _history.isNotEmpty ? _history.last : null;
