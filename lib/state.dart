@@ -93,4 +93,8 @@ class MyAppState extends ChangeNotifier {
     wp ??= current;
     return _favorites.contains(wp);
   }
+
+  void deleteFavorites(Set<WordPair> toDelete) {
+    _favorites.removeAll(toDelete);
+  }
 }

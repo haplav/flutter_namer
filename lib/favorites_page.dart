@@ -9,10 +9,10 @@ class FavoritesPage extends StatefulWidget {
   final UnmodifiableSetView<WordPair> favorites;
 
   @override
-  State<FavoritesPage> createState() => _FavoritesPageState();
+  State<FavoritesPage> createState() => FavoritesPageState();
 }
 
-class _FavoritesPageState extends State<FavoritesPage> {
+class FavoritesPageState extends State<FavoritesPage> {
   final Set<WordPair> _deleted = <WordPair>{};
 
   bool isDeleted(WordPair wp) {
@@ -37,7 +37,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final List<Widget> favoritesUI = widget.favorites
+    final favorites = widget.favorites;
+    final List<Widget> favoritesUI = favorites
         .map(
           (e) => _favoriteTile(e, isDeleted(e), theme),
         )
@@ -49,7 +50,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
         children: [
           SafeArea(
             child: Text(
-              'You now have ${_deleted.length} favorites:',
+              'You now have ${favorites.length - _deleted.length} favorites:',
               style: theme.textTheme.headlineMedium,
             ),
           ),

@@ -63,13 +63,18 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   MyHomePage(
-    MyAppState appState, {
+    this.appState, {
     super.key,
   }) {
     _pages[PageType.generator] = GeneratorPage();
-    _pages[PageType.favorites] = FavoritesPage(favorites: appState.favorites);
+    _pages[PageType.favorites] = FavoritesPage(
+      key: _favoritesPageStateKey,
+      favorites: appState.favorites,
+    );
   }
 
+  final GlobalKey _favoritesPageStateKey = GlobalKey<FavoritesPageState>();
+  final MyAppState appState;
   final Map<PageType, Widget> _pages = {};
 
   UnmodifiableMapView<PageType, Widget> get pages => UnmodifiableMapView(_pages);
@@ -164,6 +169,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _setPage(int index) {
+    // save changes when leaving the favorites page
+    if (PageType.values[_pageIndex] == PageType.favorites) {
+      final state = widget._favoritesPageStateKey.currentState as FavoritesPageState;
+      print("deleting: ${state.deleted}");
+      widget.appState.deleteFavorites(state.deleted);
+    }
     setState(() {
       print('_MyHomePageState: selected $index');
       _pageIndex = index;
