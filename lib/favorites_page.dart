@@ -91,13 +91,7 @@ class FavoritesPage extends StatelessWidget {
             theme: theme,
             onTap: state.pruneFavorites,
           ),
-          TextSpan(text: " so they disappear for good. Finally, you can "),
-          HyperlinkSpan(
-            text: 'save your current state to a file',
-            theme: theme,
-            onTap: state.saveFavorites,
-          ),
-          TextSpan(text: '.'),
+          TextSpan(text: " so they disappear for good."),
         ],
       ),
     );

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
 
@@ -55,13 +56,31 @@ class WordPairStorage {
 class MyAppState extends ChangeNotifier {
   MyAppState() : _current = _newPair() {
     loadFavorites();
+    _autosaveTimer = Timer.periodic(autosaveInterval, (_) => saveFavoritesIfChanged());
+  }
+
+  @override
+  void dispose() {
+    print("MyAppState disposed");
+    _autosaveTimer.cancel();
+    super.dispose();
+  }
+
+  @override
+  void notifyListeners() {
+    _hasChanged = true;
+    super.notifyListeners();
   }
 
   WordPair _current;
+  bool _hasChanged = false;
   final _history = <WordPair>[];
   final _favorites = <WordPair>{};
   final _deletedFavorites = <WordPair>{};
   final _favoritesStorage = WordPairStorage('favorites.txt');
+  late final Timer _autosaveTimer;
+
+  static const autosaveInterval = Duration(seconds: 5);
 
   WordPair get current => _current;
   WordPair? get previous => _history.isNotEmpty ? _history.last : null;
@@ -82,6 +101,13 @@ class MyAppState extends ChangeNotifier {
 
   void saveFavorites() {
     _favoritesStorage.save(_favorites, _deletedFavorites).then((file) => print("Saved favorites to $file"));
+    _hasChanged = false;
+  }
+
+  void saveFavoritesIfChanged() {
+    if (_hasChanged) {
+      saveFavorites();
+    }
   }
 
   void loadFavorites() {
@@ -111,7 +137,6 @@ class MyAppState extends ChangeNotifier {
       print("Permanently added ${wp.asPascalCase} to favorites");
     }
     _deletedFavorites.remove(wp);
-    saveFavorites();
     notifyListeners();
   }
 
@@ -156,11 +181,13 @@ class MyAppState extends ChangeNotifier {
   void restoreFavorites() {
     print("Restored ${_deletedFavorites.length} favorites");
     _deletedFavorites.clear();
+    saveFavorites();
     notifyListeners();
   }
 
   void deleteAllFavorites() {
     _deletedFavorites.addAll(_favorites);
+    saveFavorites();
     notifyListeners();
   }
 }
