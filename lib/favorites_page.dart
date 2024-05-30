@@ -10,16 +10,22 @@ class FavoritesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = context.watch<MyAppState>();
     final theme = Theme.of(context);
-    final tileTextStyle = theme.textTheme.bodyLarge;
     final headlineTextStyle = theme.textTheme.headlineMedium;
+
+    // nested function
+    Widget favoriteTile(WordPair wp) {
+      return FavoriteTile(
+        iconColor: theme.primaryColor,
+        tileTextStyle: theme.textTheme.bodyLarge,
+        wordPair: wp,
+        deleted: state.isDeleted(wp),
+        onPressed: () => state.toggleFavoriteTemporarily(wp),
+      );
+    }
 
     final List<Widget> favoritesUI = state.favorites
         .map(
-          (e) => FavoriteTile(
-            iconColor: theme.primaryColor,
-            tileTextStyle: tileTextStyle,
-            wordPair: e,
-          ),
+          (e) => favoriteTile(e),
         )
         .toList(growable: false);
 
@@ -29,7 +35,7 @@ class FavoritesPage extends StatelessWidget {
         children: [
           SafeArea(
             child: Text(
-              'You now have ${state.favorites.length} favorites:',
+              'You now have ${state.actualFavoritesCount} favorites:',
               style: headlineTextStyle,
             ),
           ),
@@ -57,19 +63,26 @@ class FavoriteTile extends StatelessWidget {
     required this.iconColor,
     required this.tileTextStyle,
     required this.wordPair,
+    required this.deleted,
+    required this.onPressed,
   });
 
   final Color iconColor;
   final TextStyle? tileTextStyle;
   final WordPair wordPair;
+  final bool deleted;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(
-        Icons.favorite,
-        color: iconColor,
-        size: tileTextStyle?.fontSize ?? 16,
+      leading: IconButton(
+        icon: Icon(
+          !deleted ? Icons.favorite : Icons.favorite_border,
+          color: iconColor,
+          size: tileTextStyle?.fontSize ?? 16,
+        ),
+        onPressed: onPressed,
       ),
       title: SelectableText(
         wordPair.asPascalCase,
