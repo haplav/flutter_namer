@@ -55,7 +55,6 @@ class MyAppState extends ChangeNotifier {
       },
       onError: (error) => print('Failed to load favorites: $error'),
     );
-    next();
   }
 
   WordPair _current;
