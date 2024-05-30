@@ -1,4 +1,5 @@
 import 'package:english_words/english_words.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_namer/state.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +11,6 @@ class FavoritesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = context.watch<MyAppState>();
     final theme = Theme.of(context);
-    final headlineTextStyle = theme.textTheme.headlineMedium;
 
     // nested function
     Widget favoriteTile(WordPair wp) {
@@ -32,11 +32,12 @@ class FavoritesPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(spacing),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SafeArea(
-            child: Text(
-              'You now have ${state.actualFavoritesCount} favorites:',
-              style: headlineTextStyle,
+            child: Padding(
+              padding: const EdgeInsets.all(spacing),
+              child: _message(theme, state),
             ),
           ),
           SizedBox(height: spacing),
@@ -51,6 +52,39 @@ class FavoritesPage extends StatelessWidget {
               children: favoritesUI,
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  RichText _message(ThemeData theme, MyAppState state) {
+    return RichText(
+      text: TextSpan(
+        style: theme.textTheme.bodyMedium,
+        children: [
+          TextSpan(text: 'You now have '),
+          TextSpan(
+            text: '${state.actualFavoritesCount} ',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          TextSpan(text: 'favorites. You also have '),
+          TextSpan(
+            text: '${state.deletedFavorites.length} ',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          TextSpan(text: 'temporarily deleted favorites; you can '),
+          HyperlinkSpan(
+            text: 'delete them permanently',
+            theme: theme,
+            onTap: state.pruneFavorites,
+          ),
+          TextSpan(text: " so they don't appear here next time or "),
+          HyperlinkSpan(
+            text: 'revert the deletion',
+            theme: theme,
+            onTap: state.restoreFavorites,
+          ),
+          TextSpan(text: '.'),
         ],
       ),
     );
@@ -91,4 +125,20 @@ class FavoriteTile extends StatelessWidget {
       contentPadding: EdgeInsets.zero,
     );
   }
+}
+
+class HyperlinkSpan extends TextSpan {
+  HyperlinkSpan({
+    required super.text,
+    required ThemeData theme,
+    required VoidCallback onTap,
+  }) : super(
+          recognizer: TapGestureRecognizer()..onTap = onTap,
+          style: TextStyle(
+            color: theme.primaryColor,
+            decoration: TextDecoration.underline,
+            decorationColor: theme.primaryColor,
+            fontWeight: FontWeight.w500,
+          ),
+        );
 }
