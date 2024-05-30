@@ -61,12 +61,15 @@ class MyAppState extends ChangeNotifier {
   WordPair _current;
   final _history = <WordPair>[];
   final _favorites = <WordPair>{};
+  final _deletedFavorites = <WordPair>{};
   final _favoritesStorage = WordPairStorage('favorites.txt');
 
   WordPair get current => _current;
   WordPair? get previous => _history.isNotEmpty ? _history.last : null;
   UnmodifiableListView<WordPair> get history => UnmodifiableListView(_history);
   UnmodifiableSetView<WordPair> get favorites => UnmodifiableSetView(_favorites);
+  UnmodifiableSetView<WordPair> get deletedFavorites => UnmodifiableSetView(_deletedFavorites);
+  int get actualFavoritesCount => _favorites.length - _deletedFavorites.length;
 
   static WordPair _newPair() {
     return WordPair.random();
@@ -80,17 +83,59 @@ class MyAppState extends ChangeNotifier {
 
   void toggleFavorite([WordPair? wp]) {
     wp ??= current;
-    if (_favorites.contains(wp)) {
+    if (isFavorite(wp)) {
       _favorites.remove(wp);
+      print("Permanently removed ${wp.asPascalCase} from favorites");
     } else {
       _favorites.add(wp);
+      print("Permanently added ${wp.asPascalCase} to favorites");
     }
+    _deletedFavorites.remove(wp);
     _favoritesStorage.save(_favorites).then((file) => print("Saved favorites to file: $file"));
     notifyListeners();
   }
 
+  void toggleFavoriteTemporarily([WordPair? wp]) {
+    wp ??= current;
+    if (isInGeneratorPage(wp)) {
+      toggleFavorite(wp);
+      return;
+    }
+    if (_deletedFavorites.contains(wp)) {
+      _deletedFavorites.remove(wp);
+      print("${wp.asPascalCase} added back to favorites");
+    } else {
+      if (_favorites.contains(wp)) {
+        _deletedFavorites.add(wp);
+        print("${wp.asPascalCase} temporarily removed from favorites");
+      }
+    }
+    notifyListeners();
+  }
+
+  bool isInGeneratorPage(WordPair wp) => wp == current || _history.contains(wp);
+
+  bool isDeleted(WordPair wp) => _deletedFavorites.contains(wp);
+
   bool isFavorite([WordPair? wp]) {
     wp ??= current;
-    return _favorites.contains(wp);
+    return _favorites.contains(wp) && !isDeleted(wp);
+  }
+
+  // Permanently removes favorites that have been deleted temporarily and returns their number
+  int pruneFavorites() {
+    int count = _deletedFavorites.length;
+    _favorites.removeAll(_deletedFavorites);
+    _favoritesStorage.save(_favorites).then((file) => print("Saved favorites to file: $file"));
+    _deletedFavorites.clear();
+    print("Pruned $count favorites");
+    notifyListeners();
+    return count;
+  }
+
+  void restoreFavorites() {
+    print("Restored ${_deletedFavorites.length} favorites");
+    _deletedFavorites.clear();
+    notifyListeners();
   }
 }
