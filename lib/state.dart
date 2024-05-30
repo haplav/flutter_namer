@@ -22,39 +22,39 @@ class WordPairStorage {
     return File('$path/$_filename');
   }
 
-  Future<File> save(Iterable<WordPair> wordPairs) async {
-    final contents = wordPairs.map((pair) => "${pair.first} ${pair.second}").join('\n');
+  Future<File> save(Iterable<WordPair> wordPairs, Set<WordPair> deleted) async {
+    final contents = wordPairs
+        .map((pair) => "${pair.first} ${pair.second}${deleted.contains(pair) ? ' *' : ''}")
+        .join('\n');
     final file = await localFile;
     file.writeAsString(contents);
     return file;
   }
 
-  Future<List<WordPair>> load() async {
+  Future<(List<WordPair>, Set<WordPair>)> load() async {
     final path = await localPath;
     final file = File('$path/$_filename');
-    List<WordPair> list = <WordPair>[];
+    final List<WordPair> list = <WordPair>[];
+    final Set<WordPair> deleted = <WordPair>{};
     if (await file.exists()) {
       final contents = await file.readAsString();
-      list = contents.split('\n').map((e) {
-        var words = e.split(' ');
-        return WordPair(words[0], words[1]);
-      }).toList();
+      final lines = contents.split('\n');
+      for (final line in lines) {
+        final words = line.split(' ');
+        final pair = WordPair(words[0], words[1]);
+        list.add(pair);
+        if (words.length > 2 && words[2] == '*') {
+          deleted.add(pair);
+        }
+      }
     }
-    return list;
+    return (list, deleted);
   }
 }
 
 class MyAppState extends ChangeNotifier {
   MyAppState() : _current = _newPair() {
-    // load favorites from file in the background
-    _favoritesStorage.load().then(
-      (list) {
-        _favorites.addAll(list);
-        notifyListeners();
-        print("Loaded favorites from file ${_favoritesStorage.filename}");
-      },
-      onError: (error) => print('Failed to load favorites: $error'),
-    );
+    loadFavorites();
   }
 
   WordPair _current;
@@ -80,6 +80,27 @@ class MyAppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void saveFavorites() {
+    _favoritesStorage.save(_favorites, _deletedFavorites).then((file) => print("Saved favorites to $file"));
+  }
+
+  void loadFavorites() {
+    _favoritesStorage.load().then(
+      (tuple) {
+        final list = tuple.$1;
+        final deleted = tuple.$2;
+        _favorites.clear();
+        _favorites.addAll(list);
+        _deletedFavorites.clear();
+        _deletedFavorites.addAll(deleted);
+        notifyListeners();
+        print("Loaded favorites from file ${_favoritesStorage.filename}");
+      },
+      onError: (error) => print('Failed to load favorites: $error'),
+    );
+    notifyListeners();
+  }
+
   void toggleFavorite([WordPair? wp]) {
     wp ??= current;
     if (isFavorite(wp)) {
@@ -90,7 +111,7 @@ class MyAppState extends ChangeNotifier {
       print("Permanently added ${wp.asPascalCase} to favorites");
     }
     _deletedFavorites.remove(wp);
-    _favoritesStorage.save(_favorites).then((file) => print("Saved favorites to file: $file"));
+    saveFavorites();
     notifyListeners();
   }
 
@@ -125,7 +146,7 @@ class MyAppState extends ChangeNotifier {
   int pruneFavorites() {
     int count = _deletedFavorites.length;
     _favorites.removeAll(_deletedFavorites);
-    _favoritesStorage.save(_favorites).then((file) => print("Saved favorites to file: $file"));
+    saveFavorites();
     _deletedFavorites.clear();
     print("Pruned $count favorites");
     notifyListeners();
@@ -135,6 +156,11 @@ class MyAppState extends ChangeNotifier {
   void restoreFavorites() {
     print("Restored ${_deletedFavorites.length} favorites");
     _deletedFavorites.clear();
+    notifyListeners();
+  }
+
+  void deleteAllFavorites() {
+    _deletedFavorites.addAll(_favorites);
     notifyListeners();
   }
 }
