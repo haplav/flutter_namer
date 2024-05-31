@@ -27,6 +27,8 @@ class FavoritesPage extends StatelessWidget {
         .map(
           (e) => favoriteTile(e),
         )
+        .toList()
+        .reversed
         .toList(growable: false);
 
     return Padding(
