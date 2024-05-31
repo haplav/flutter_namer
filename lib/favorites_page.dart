@@ -13,7 +13,6 @@ class FavoritesPage extends StatelessWidget {
     final appState = context.watch<MyAppState>();
     final theme = Theme.of(context);
 
-    // nested function
     FavoriteTile favoriteTile(WordPair wp) {
       final VoidCallback onPressed;
       final IconData icon;
@@ -37,6 +36,46 @@ class FavoritesPage extends StatelessWidget {
       );
     }
 
+    RichText message() {
+      return RichText(
+        text: TextSpan(
+          style: theme.textTheme.bodyMedium,
+          children: [
+            TextSpan(text: 'You now have '),
+            TextSpan(
+              text: '${appState.actualFavoritesCount} ',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            TextSpan(text: 'favorites and '),
+            TextSpan(
+              text: '${appState.deletedFavorites.length} ',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            TextSpan(text: 'temporarily deleted. '),
+            TextSpan(text: 'You can '),
+            HyperlinkSpan(
+              text: 'delete',
+              theme: theme,
+              onTap: appState.deleteAllFavorites,
+            ),
+            TextSpan(text: ' or '),
+            HyperlinkSpan(
+              text: 'restore',
+              theme: theme,
+              onTap: appState.restoreFavorites,
+            ),
+            TextSpan(text: ' all your favorites at once. Further, you can '),
+            HyperlinkSpan(
+              text: 'delete them permanently',
+              theme: theme,
+              onTap: appState.pruneFavorites,
+            ),
+            TextSpan(text: " so they disappear for good."),
+          ],
+        ),
+      );
+    }
+
     final List<FavoriteTile> favoritesUI = appState.favorites
         .map(
           (e) => favoriteTile(e),
@@ -47,47 +86,7 @@ class FavoritesPage extends StatelessWidget {
 
     return FavoritesGrid(
       favoritesUI: favoritesUI,
-      message: _message(theme, appState),
-    );
-  }
-
-  RichText _message(ThemeData theme, MyAppState state) {
-    return RichText(
-      text: TextSpan(
-        style: theme.textTheme.bodyMedium,
-        children: [
-          TextSpan(text: 'You now have '),
-          TextSpan(
-            text: '${state.actualFavoritesCount} ',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          TextSpan(text: 'favorites and '),
-          TextSpan(
-            text: '${state.deletedFavorites.length} ',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          TextSpan(text: 'temporarily deleted. '),
-          TextSpan(text: 'You can '),
-          HyperlinkSpan(
-            text: 'delete',
-            theme: theme,
-            onTap: state.deleteAllFavorites,
-          ),
-          TextSpan(text: ' or '),
-          HyperlinkSpan(
-            text: 'restore',
-            theme: theme,
-            onTap: state.restoreFavorites,
-          ),
-          TextSpan(text: ' all your favorites at once. Further, you can '),
-          HyperlinkSpan(
-            text: 'delete them permanently',
-            theme: theme,
-            onTap: state.pruneFavorites,
-          ),
-          TextSpan(text: " so they disappear for good."),
-        ],
-      ),
+      message: message(),
     );
   }
 }
