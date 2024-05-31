@@ -101,20 +101,20 @@ class _MyHomePageState extends State<MyHomePage> {
       return Column(
         children: [
           Expanded(child: mainArea),
-          SafeArea(child: buildBottomNav()),
+          SafeArea(child: _buildBottomNav()),
         ],
       );
     } else {
       return Row(
         children: [
-          SafeArea(child: buildSideNav(extended: width > 600)),
+          SafeArea(child: _buildSideNav(extended: width > 600)),
           Expanded(child: mainArea),
         ],
       );
     }
   }
 
-  NavigationRail buildSideNav({required bool extended}) {
+  NavigationRail _buildSideNav({required bool extended}) {
     return NavigationRail(
       extended: extended,
       minExtendedWidth: 175,
@@ -130,7 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  BottomNavigationBar buildBottomNav() {
+  BottomNavigationBar _buildBottomNav() {
     return BottomNavigationBar(
       onTap: _animateToPage,
       currentIndex: _pageIndex,
