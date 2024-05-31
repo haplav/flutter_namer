@@ -14,6 +14,7 @@ typedef PageConfig = ({
   Widget page,
   IconData icon,
   String title,
+  int? iconOverlayNumber,
 });
 
 typedef PageConfigToItem<D> = D Function(PageConfig);
@@ -56,12 +57,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<PageConfig> pages = [
-    (page: GeneratorPage(), icon: Icons.home, title: 'Home'),
-    (page: FavoritesPage(), icon: Icons.favorite, title: 'Favorites'),
-    (page: BinPage(), icon: Icons.delete_forever, title: 'Bin'),
-  ];
-
   late PageController _pageController;
   int _pageIndex = 0;
 
@@ -81,8 +76,30 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final appState = context.watch<MyAppState>();
     final theme = Theme.of(context);
     final width = MediaQuery.of(context).size.width;
+
+    final List<PageConfig> pages = [
+      (
+        page: GeneratorPage(),
+        icon: Icons.home,
+        title: 'Home',
+        iconOverlayNumber: appState.history.length,
+      ),
+      (
+        page: FavoritesPage(),
+        icon: Icons.favorite,
+        title: 'Favorites',
+        iconOverlayNumber: appState.actualFavoritesCount
+      ),
+      (
+        page: BinPage(),
+        icon: Icons.delete_forever,
+        title: 'Bin',
+        iconOverlayNumber: appState.deletedFavorites.length,
+      ),
+    ];
 
     final mainArea = Container(
       color: theme.colorScheme.primaryContainer,
@@ -101,43 +118,56 @@ class _MyHomePageState extends State<MyHomePage> {
       return Column(
         children: [
           Expanded(child: mainArea),
-          SafeArea(child: _buildBottomNav()),
+          SafeArea(child: _buildBottomNav(pages, theme: theme)),
         ],
       );
     } else {
       return Row(
         children: [
-          SafeArea(child: _buildSideNav(extended: width > 600)),
+          SafeArea(child: _buildSideNav(pages, theme: theme, extended: width > 600)),
           Expanded(child: mainArea),
         ],
       );
     }
   }
 
-  NavigationRail _buildSideNav({required bool extended}) {
+  NavigationRail _buildSideNav(
+    List<PageConfig> pages, {
+    required ThemeData theme,
+    required bool extended,
+  }) {
     return NavigationRail(
       extended: extended,
       minExtendedWidth: 175,
+      selectedLabelTextStyle: TextStyle(
+        color: theme.primaryColor,
+      ),
+      unselectedLabelTextStyle: TextStyle(
+        color: theme.colorScheme.onSurface,
+      ),
       onDestinationSelected: _animateToPage,
       selectedIndex: _pageIndex,
       destinations: pagesToDestinations(
         pages,
         (p) => NavigationRailDestination(
-          icon: _pageToIcon(p),
+          icon: _pageToIcon(p, theme),
           label: Text(p.title),
         ),
       ),
     );
   }
 
-  BottomNavigationBar _buildBottomNav() {
+  BottomNavigationBar _buildBottomNav(
+    List<PageConfig> pages, {
+    required ThemeData theme,
+  }) {
     return BottomNavigationBar(
       onTap: _animateToPage,
       currentIndex: _pageIndex,
       items: pagesToDestinations(
         pages,
         (p) => BottomNavigationBarItem(
-          icon: _pageToIcon(p),
+          icon: _pageToIcon(p, theme),
           label: p.title,
         ),
       ),
@@ -160,8 +190,47 @@ class _MyHomePageState extends State<MyHomePage> {
     // no need to call _setPage as it's already called by the PageView
   }
 
-  static Tooltip _pageToIcon(PageConfig e) => Tooltip(
-        message: e.title,
-        child: Icon(e.icon),
-      );
+  static Tooltip _pageToIcon(PageConfig p, ThemeData theme) {
+    return Tooltip(
+      message: p.title,
+      child: Stack(
+        alignment: Alignment.topRight,
+        clipBehavior: Clip.none,
+        children: [
+          Icon(
+            p.icon,
+            size: 30,
+          ),
+          if (p.iconOverlayNumber != null)
+            Positioned(
+              top: -4,
+              right: -8,
+              child: Opacity(
+                opacity: 0.825,
+                child: Container(
+                  constraints: BoxConstraints(
+                    minWidth: 20,
+                    minHeight: 20,
+                  ),
+                  padding: EdgeInsets.all(2.5),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.inversePrimary,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    p.iconOverlayNumber.toString(),
+                    style: TextStyle(
+                      color: theme.colorScheme.onSurface,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
 }
