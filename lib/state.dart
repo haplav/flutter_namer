@@ -99,6 +99,11 @@ class MyAppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void purgeHistory() {
+    _history.clear();
+    notifyListeners();
+  }
+
   void saveFavorites() {
     _favoritesStorage.save(_favorites, _deletedFavorites).then((file) => print("Saved favorites to $file"));
     _hasChanged = false;

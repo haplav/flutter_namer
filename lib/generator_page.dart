@@ -31,6 +31,15 @@ class GeneratorPage extends StatelessWidget {
                 icon: Icon(Icons.skip_next_rounded),
                 label: const Text('Next Idea'),
               ),
+              const SizedBox(width: 10),
+              Tooltip(
+                message: "Purge the history of word pairs above",
+                child: ElevatedButton.icon(
+                  onPressed: appState.purgeHistory,
+                  icon: Icon(Icons.delete),
+                  label: const Text('Purge'),
+                ),
+              ),
             ],
           ),
         ),
