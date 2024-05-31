@@ -147,10 +147,6 @@ class MyAppState extends ChangeNotifier {
 
   void toggleFavoriteTemporarily([WordPair? wp]) {
     wp ??= current;
-    if (isInGeneratorPage(wp)) {
-      toggleFavorite(wp);
-      return;
-    }
     if (_deletedFavorites.contains(wp)) {
       _deletedFavorites.remove(wp);
       print("${wp.asPascalCase} added back to favorites");

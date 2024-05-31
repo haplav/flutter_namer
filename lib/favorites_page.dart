@@ -14,12 +14,25 @@ class FavoritesPage extends StatelessWidget {
 
     // nested function
     Widget favoriteTile(WordPair wp) {
+      final VoidCallback onPressed;
+      final IconData icon;
+      final String message;
+      if (state.isInGeneratorPage(wp)) {
+        icon = Icons.cancel_sharp;
+        message = "Remove from favorites (still visible in Home)";
+        onPressed = () => state.toggleFavorite(wp);
+      } else {
+        icon = !state.isDeleted(wp) ? Icons.favorite : Icons.favorite_border;
+        message = "Toggle favorite";
+        onPressed = () => state.toggleFavoriteTemporarily(wp);
+      }
       return FavoriteTile(
+        icon: icon,
         iconColor: theme.primaryColor,
+        message: message,
         tileTextStyle: theme.textTheme.bodyLarge,
         wordPair: wp,
-        deleted: state.isDeleted(wp),
-        onPressed: () => state.toggleFavoriteTemporarily(wp),
+        onPressed: onPressed,
       );
     }
 
@@ -103,17 +116,19 @@ class FavoritesPage extends StatelessWidget {
 class FavoriteTile extends StatelessWidget {
   const FavoriteTile({
     super.key,
+    required this.icon,
     required this.iconColor,
+    required this.message,
     required this.tileTextStyle,
     required this.wordPair,
-    required this.deleted,
     required this.onPressed,
   });
 
+  final IconData icon;
   final Color iconColor;
+  final String message;
   final TextStyle? tileTextStyle;
   final WordPair wordPair;
-  final bool deleted;
   final VoidCallback onPressed;
 
   @override
@@ -121,11 +136,12 @@ class FavoriteTile extends StatelessWidget {
     return ListTile(
       leading: IconButton(
         icon: Icon(
-          !deleted ? Icons.favorite : Icons.favorite_border,
+          icon,
           color: iconColor,
-          size: tileTextStyle?.fontSize ?? 16,
+          size: (tileTextStyle?.fontSize ?? 16) * 1.15,
         ),
         onPressed: onPressed,
+        tooltip: message,
       ),
       title: SelectableText(
         wordPair.asPascalCase,
