@@ -9,7 +9,7 @@ class FavoritesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.watch<MyAppState>();
+    final appState = context.watch<MyAppState>();
     final theme = Theme.of(context);
 
     // nested function
@@ -17,14 +17,14 @@ class FavoritesPage extends StatelessWidget {
       final VoidCallback onPressed;
       final IconData icon;
       final String message;
-      if (state.isInGeneratorPage(wp)) {
+      if (appState.isInGeneratorPage(wp)) {
         icon = Icons.cancel_sharp;
         message = "Remove from favorites (still visible in Home)";
-        onPressed = () => state.toggleFavorite(wp);
+        onPressed = () => appState.toggleFavorite(wp);
       } else {
-        icon = !state.isDeleted(wp) ? Icons.favorite : Icons.favorite_border;
+        icon = !appState.isDeleted(wp) ? Icons.favorite : Icons.favorite_border;
         message = "Toggle favorite";
-        onPressed = () => state.toggleFavoriteTemporarily(wp);
+        onPressed = () => appState.toggleFavoriteTemporarily(wp);
       }
       return FavoriteTile(
         icon: icon,
@@ -36,7 +36,7 @@ class FavoritesPage extends StatelessWidget {
       );
     }
 
-    final List<Widget> favoritesUI = state.favorites
+    final List<Widget> favoritesUI = appState.favorites
         .map(
           (e) => favoriteTile(e),
         )
@@ -52,7 +52,7 @@ class FavoritesPage extends StatelessWidget {
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(spacing),
-              child: _message(theme, state),
+              child: _message(theme, appState),
             ),
           ),
           SizedBox(height: spacing),
