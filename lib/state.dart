@@ -159,6 +159,13 @@ class MyAppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteFavoritePermanently([WordPair? wp]) {
+    wp ??= current;
+    _favorites.remove(wp);
+    _deletedFavorites.remove(wp);
+    notifyListeners();
+  }
+
   bool isInGeneratorPage(WordPair wp) => wp == current || _history.contains(wp);
 
   bool isDeleted(WordPair wp) => _deletedFavorites.contains(wp);

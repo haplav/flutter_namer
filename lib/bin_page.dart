@@ -5,7 +5,7 @@ import 'package:flutter_namer/favorites_ui.dart';
 import 'package:flutter_namer/state.dart';
 import 'package:provider/provider.dart';
 
-class FavoritesPage extends StatelessWidget {
+class BinPage extends StatelessWidget {
   static const double spacing = 15.0;
 
   @override
@@ -14,25 +14,13 @@ class FavoritesPage extends StatelessWidget {
     final theme = Theme.of(context);
 
     FavoriteTile favoriteTile(WordPair wp) {
-      final VoidCallback onPressed;
-      final IconData icon;
-      final String message;
-      if (appState.isInGeneratorPage(wp)) {
-        icon = Icons.cancel_sharp;
-        message = "Remove from favorites (still visible in Home)";
-        onPressed = () => appState.toggleFavorite(wp);
-      } else {
-        icon = !appState.isDeleted(wp) ? Icons.favorite : Icons.favorite_border;
-        message = "Toggle favorite";
-        onPressed = () => appState.toggleFavoriteTemporarily(wp);
-      }
       return FavoriteTile(
-        icon: icon,
+        icon: Icons.delete_forever,
         iconColor: theme.primaryColor,
-        message: message,
+        message: "Delete permanently",
         tileTextStyle: theme.textTheme.bodyLarge,
         wordPair: wp,
-        onPressed: onPressed,
+        onPressed: () => appState.deleteFavoritePermanently(wp),
       );
     }
 
@@ -43,34 +31,23 @@ class FavoritesPage extends StatelessWidget {
           children: [
             TextSpan(text: 'You have '),
             TextSpan(
-              text: '${appState.actualFavoritesCount} ',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            TextSpan(text: 'favorites and '),
-            TextSpan(
               text: '${appState.deletedFavorites.length} ',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            TextSpan(text: 'temporarily deleted. '),
+            TextSpan(text: 'temporarily deleted favorites. '),
             TextSpan(text: 'You can '),
             HyperlinkSpan(
-              text: 'delete',
+              text: 'delete them permanently',
               theme: theme,
-              onTap: appState.deleteAllFavorites,
+              onTap: appState.pruneFavorites,
             ),
-            TextSpan(text: ' or '),
-            HyperlinkSpan(
-              text: 'restore',
-              theme: theme,
-              onTap: appState.restoreFavorites,
-            ),
-            TextSpan(text: ' all your favorites at once.'),
+            TextSpan(text: " so they disappear for good."),
           ],
         ),
       );
     }
 
-    final List<FavoriteTile> favoritesUI = appState.favorites
+    final List<FavoriteTile> favoritesUI = appState.deletedFavorites
         .map(
           (e) => favoriteTile(e),
         )

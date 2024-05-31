@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'bin_page.dart';
 import 'favorites_page.dart';
 import 'generator_page.dart';
 import 'state.dart';
@@ -58,6 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<PageConfig> pages = [
     (page: GeneratorPage(), icon: Icons.home, title: 'Home'),
     (page: FavoritesPage(), icon: Icons.favorite, title: 'Favorites'),
+    (page: BinPage(), icon: Icons.delete_forever, title: 'Bin'),
   ];
 
   late PageController _pageController;
