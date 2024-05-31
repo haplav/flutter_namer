@@ -98,34 +98,35 @@ class BigWordPairCard extends StatelessWidget {
 class History extends StatelessWidget {
   History({super.key});
 
-  TextButton _historyItemButton(MyAppState appState, WordPair e, TextStyle? textStyle) {
-    return TextButton.icon(
-      onPressed: () => appState.toggleFavorite(e),
-      icon: Icon(
-        appState.isFavorite(e) ? Icons.favorite : Icons.favorite_border,
-        size: textStyle?.fontSize ?? 15,
-      ),
-      label: Text(
-        e.asPascalCase,
-        style: textStyle,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     List<WordPair> history = appState.history;
     final TextStyle? textStyle = Theme.of(context).textTheme.bodyMedium;
 
+    // nested function
+    TextButton historyItemButton(WordPair wp) {
+      return TextButton.icon(
+        onPressed: () => appState.toggleFavorite(wp),
+        icon: Icon(
+          appState.isFavorite(wp) ? Icons.favorite : Icons.favorite_border,
+          size: textStyle?.fontSize ?? 15,
+        ),
+        label: Text(
+          wp.asPascalCase,
+          style: textStyle,
+        ),
+      );
+    }
+
     return ListView.builder(
       padding: EdgeInsets.only(top: 50),
       reverse: true,
-      prototypeItem: _historyItemButton(appState, appState.current, textStyle),
+      prototypeItem: historyItemButton(appState.current),
       itemCount: history.length,
       itemBuilder: (context, index) {
         return Center(
-          child: _historyItemButton(appState, history[index], textStyle),
+          child: historyItemButton(history[index]),
         );
       },
     );
