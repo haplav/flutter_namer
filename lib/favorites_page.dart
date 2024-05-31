@@ -1,6 +1,7 @@
 import 'package:english_words/english_words.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_namer/commons.dart';
+import 'package:flutter_namer/favorites_ui.dart';
 import 'package:flutter_namer/state.dart';
 import 'package:provider/provider.dart';
 
@@ -13,7 +14,7 @@ class FavoritesPage extends StatelessWidget {
     final theme = Theme.of(context);
 
     // nested function
-    Widget favoriteTile(WordPair wp) {
+    FavoriteTile favoriteTile(WordPair wp) {
       final VoidCallback onPressed;
       final IconData icon;
       final String message;
@@ -36,7 +37,7 @@ class FavoritesPage extends StatelessWidget {
       );
     }
 
-    final List<Widget> favoritesUI = appState.favorites
+    final List<FavoriteTile> favoritesUI = appState.favorites
         .map(
           (e) => favoriteTile(e),
         )
@@ -44,31 +45,9 @@ class FavoritesPage extends StatelessWidget {
         .reversed
         .toList(growable: false);
 
-    return Padding(
-      padding: const EdgeInsets.all(spacing),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(spacing),
-              child: _message(theme, appState),
-            ),
-          ),
-          SizedBox(height: spacing),
-          Expanded(
-            child: GridView(
-              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 300,
-                childAspectRatio: 300 / 50,
-                crossAxisSpacing: spacing,
-                mainAxisSpacing: spacing,
-              ),
-              children: favoritesUI,
-            ),
-          ),
-        ],
-      ),
+    return FavoritesGrid(
+      favoritesUI: favoritesUI,
+      message: _message(theme, appState),
     );
   }
 
@@ -111,59 +90,4 @@ class FavoritesPage extends StatelessWidget {
       ),
     );
   }
-}
-
-class FavoriteTile extends StatelessWidget {
-  const FavoriteTile({
-    super.key,
-    required this.icon,
-    required this.iconColor,
-    required this.message,
-    required this.tileTextStyle,
-    required this.wordPair,
-    required this.onPressed,
-  });
-
-  final IconData icon;
-  final Color iconColor;
-  final String message;
-  final TextStyle? tileTextStyle;
-  final WordPair wordPair;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: IconButton(
-        icon: Icon(
-          icon,
-          color: iconColor,
-          size: (tileTextStyle?.fontSize ?? 16) * 1.15,
-        ),
-        onPressed: onPressed,
-        tooltip: message,
-      ),
-      title: SelectableText(
-        wordPair.asPascalCase,
-        style: tileTextStyle,
-      ),
-      contentPadding: EdgeInsets.zero,
-    );
-  }
-}
-
-class HyperlinkSpan extends TextSpan {
-  HyperlinkSpan({
-    required super.text,
-    required ThemeData theme,
-    required VoidCallback onTap,
-  }) : super(
-          recognizer: TapGestureRecognizer()..onTap = onTap,
-          style: TextStyle(
-            color: theme.primaryColor,
-            decoration: TextDecoration.underline,
-            decorationColor: theme.primaryColor,
-            fontWeight: FontWeight.w500,
-          ),
-        );
 }
