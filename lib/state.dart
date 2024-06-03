@@ -76,7 +76,7 @@ class MyAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  static const autosaveInterval = Duration(seconds: 8);
+  static const autosaveInterval = Duration(seconds: 5);
 
   WordPair _current;
   final _history = <WordPair>[];
