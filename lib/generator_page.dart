@@ -113,6 +113,15 @@ class History extends StatelessWidget {
   });
 
   final GlobalKey<AnimatedListState> animatedListKey;
+  static const Gradient gradient = LinearGradient(
+    colors: [
+      Colors.transparent,
+      Colors.purple, // should not be visible - use only as mask
+    ],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    stops: [0.0, 0.4],
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -135,20 +144,24 @@ class History extends StatelessWidget {
       );
     }
 
-    return AnimatedList(
-      key: animatedListKey,
-      padding: EdgeInsets.only(top: 50),
-      reverse: true,
-      initialItemCount: history.length,
-      itemBuilder: (context, index, animation) {
-        return SizeTransition(
-          sizeFactor: animation,
-          axisAlignment: -1.0,
-          child: Center(
-            child: historyItemButton(history[index]),
-          ),
-        );
-      },
+    return ShaderMask(
+      shaderCallback: (bounds) => gradient.createShader(bounds),
+      blendMode: BlendMode.dstIn,
+      child: AnimatedList(
+        key: animatedListKey,
+        padding: EdgeInsets.only(top: 50),
+        reverse: true,
+        initialItemCount: history.length,
+        itemBuilder: (context, index, animation) {
+          return SizeTransition(
+            sizeFactor: animation,
+            axisAlignment: -1.0,
+            child: Center(
+              child: historyItemButton(history[index]),
+            ),
+          );
+        },
+      ),
     );
   }
 }
