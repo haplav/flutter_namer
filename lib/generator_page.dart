@@ -43,7 +43,7 @@ class GeneratorPage extends StatelessWidget {
           flex: 3,
           child: Padding(
             padding: const EdgeInsets.only(bottom: 8.0, top: 15.0),
-            child: history,
+            child: SafeArea(child: history),
           ),
         ),
         FittedBox(child: BigWordPairCard(appState.current)),

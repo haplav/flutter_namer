@@ -132,7 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return Column(
         children: [
           Expanded(child: mainArea),
-          SafeArea(child: _buildBottomNav(pages, theme: theme)),
+          _buildBottomNav(pages, theme: theme),
         ],
       );
     } else {
