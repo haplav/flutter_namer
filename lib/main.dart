@@ -208,7 +208,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _animateToPage(int index) {
     _pageController.animateToPage(
       index,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 400),
       curve: Curves.fastOutSlowIn,
     );
     // no need to call _setPage as it's already called by the PageView
