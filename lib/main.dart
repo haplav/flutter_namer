@@ -66,7 +66,7 @@ class MyHomePage extends StatefulWidget {
     PageType.generator: PageConfig(
       type: PageType.generator,
       title: 'Generator',
-      icon: Icons.home,
+      icon: Icons.add_circle_outline,
       page: GeneratorPage(),
     ),
     PageType.favorites: PageConfig(
