@@ -23,10 +23,15 @@ class GeneratorPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Expanded(flex: 3, child: History(animatedListKey: _historyAnimatedListKey)),
-        SizedBox(height: 10),
+        Expanded(
+          flex: 3,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 8.0, top: 15.0),
+            child: History(animatedListKey: _historyAnimatedListKey),
+          ),
+        ),
         FittedBox(child: BigWordPairCard(appState.current)),
-        SizedBox(height: 10),
+        const SizedBox(height: 12),
         FittedBox(
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -77,6 +82,7 @@ class BigWordPairCard extends StatelessWidget {
         message: "Just a random word pair idea!",
         child: Card(
           color: theme.colorScheme.primary,
+          margin: EdgeInsets.all(0),
           child: Padding(
             padding: const EdgeInsets.all(30),
             child: SelectableText(
