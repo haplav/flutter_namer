@@ -26,9 +26,9 @@ class FavoritesGrid extends StatelessWidget {
               child: message,
             ),
           ),
-          SizedBox(height: spacing),
           Expanded(
             child: GridView(
+              padding: EdgeInsets.zero,
               gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 300,
                 childAspectRatio: 300 / 50,
@@ -65,11 +65,13 @@ class FavoriteTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      titleAlignment: ListTileTitleAlignment.center,
       leading: IconButton(
+        padding: EdgeInsets.all(2),
         icon: Icon(
           icon,
           color: iconColor,
-          size: (tileTextStyle?.fontSize ?? 16) * 1.15,
+          size: (tileTextStyle?.fontSize ?? 16) * 1.5,
         ),
         onPressed: onPressed,
         tooltip: message,

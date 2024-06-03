@@ -38,7 +38,7 @@ class FavoritesPage extends StatelessWidget {
     RichText message() {
       return RichText(
         text: TextSpan(
-          style: theme.textTheme.bodyMedium,
+          style: theme.textTheme.bodyLarge,
           children: [
             TextSpan(text: 'You have '),
             TextSpan(
