@@ -13,32 +13,34 @@ class WordPairStorage {
 
   String get filename => _filename;
 
-  Future<String> get localPath async {
+  Future<String> get directoryPath async {
     final directory = await getApplicationDocumentsDirectory();
     return directory.path;
   }
 
-  Future<File> get localFile async {
-    final path = await localPath;
-    return File('$path/$_filename');
+  Future<String> get filePath async {
+    return '${await directoryPath}/$_filename';
+  }
+
+  Future<File> get file async {
+    return File(await filePath);
   }
 
   Future<File> save(Iterable<WordPair> wordPairs, Set<WordPair> deleted) async {
     final contents = wordPairs
         .map((pair) => "${pair.first} ${pair.second}${deleted.contains(pair) ? ' *' : ''}")
         .join('\n');
-    final file = await localFile;
-    file.writeAsString(contents);
-    return file;
+    final f = await file;
+    f.writeAsString(contents);
+    return f;
   }
 
   Future<(List<WordPair>, Set<WordPair>)> load() async {
-    final path = await localPath;
-    final file = File('$path/$_filename');
+    final f = await file;
     final List<WordPair> list = <WordPair>[];
     final Set<WordPair> deleted = <WordPair>{};
-    if (await file.exists()) {
-      final contents = await file.readAsString();
+    if (await f.exists()) {
+      final contents = await f.readAsString();
       final lines = contents.split('\n');
       for (final line in lines) {
         final words = line.split(' ');
