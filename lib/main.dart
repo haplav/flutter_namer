@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,17 +12,25 @@ void main() {
   runApp(const MyApp());
 }
 
-typedef PageConfig = ({
-  Widget page,
-  IconData icon,
-  String title,
-  int? iconOverlayNumber,
-});
+enum PageType {
+  generator,
+  favorites,
+  bin,
+}
 
-typedef PageConfigToItem<D> = D Function(PageConfig);
+class PageConfig {
+  final PageType type;
+  final IconData icon;
+  final String title;
+  final Widget page;
+  int? iconOverlayNumber;
 
-List<T> pagesToDestinations<T>(List<PageConfig> pages, PageConfigToItem<T> factory) {
-  return pages.map((e) => factory(e)).toList(growable: false);
+  PageConfig({
+    required this.type,
+    required this.icon,
+    required this.title,
+    required this.page,
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -52,6 +62,29 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
+  final Map<PageType, PageConfig> _pages = {
+    PageType.generator: PageConfig(
+      type: PageType.generator,
+      title: 'Generator',
+      icon: Icons.home,
+      page: GeneratorPage(),
+    ),
+    PageType.favorites: PageConfig(
+      type: PageType.favorites,
+      title: 'Favorites',
+      icon: Icons.favorite,
+      page: FavoritesPage(),
+    ),
+    PageType.bin: PageConfig(
+      type: PageType.bin,
+      title: 'Bin',
+      icon: Icons.delete_forever,
+      page: BinPage(),
+    ),
+  };
+
+  UnmodifiableMapView<PageType, PageConfig> get pages => UnmodifiableMapView(_pages);
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -79,28 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final appState = context.watch<MyAppState>();
     final theme = Theme.of(context);
     final width = MediaQuery.of(context).size.width;
-
-    final List<PageConfig> pages = [
-      (
-        page: GeneratorPage(),
-        icon: Icons.home,
-        title: 'Home',
-        iconOverlayNumber: appState.history.length,
-      ),
-      (
-        page: FavoritesPage(),
-        icon: Icons.favorite,
-        title: 'Favorites',
-        iconOverlayNumber: appState.actualFavoritesCount
-      ),
-      (
-        page: BinPage(),
-        icon: Icons.delete_forever,
-        title: 'Bin',
-        iconOverlayNumber: appState.deletedFavorites.length,
-      ),
-    ];
-
+    final Iterable<PageConfig> pages = widget.pages.values;
     final mainArea = Container(
       color: theme.colorScheme.primaryContainer,
       child: PageView(
@@ -109,6 +121,8 @@ class _MyHomePageState extends State<MyHomePage> {
         children: pages.map((e) => e.page).toList(),
       ),
     );
+
+    _setIconOverlayNumbers(appState);
 
     if (_pageIndex < 0 || _pageIndex > pages.length - 1) {
       throw UnimplementedError('no widget with index $_pageIndex');
@@ -131,8 +145,16 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  // Set the icon overlay numbers from appState
+  void _setIconOverlayNumbers(MyAppState appState) {
+    widget.pages
+      ..[PageType.generator]?.iconOverlayNumber = appState.history.length
+      ..[PageType.favorites]?.iconOverlayNumber = appState.actualFavoritesCount
+      ..[PageType.bin]?.iconOverlayNumber = appState.deletedFavorites.length;
+  }
+
   NavigationRail _buildSideNav(
-    List<PageConfig> pages, {
+    Iterable<PageConfig> pages, {
     required ThemeData theme,
     required bool extended,
   }) {
@@ -147,30 +169,32 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       onDestinationSelected: _animateToPage,
       selectedIndex: _pageIndex,
-      destinations: pagesToDestinations(
-        pages,
-        (p) => NavigationRailDestination(
-          icon: _pageToIcon(p, theme),
-          label: Text(p.title),
-        ),
-      ),
+      destinations: pages
+          .map(
+            (p) => NavigationRailDestination(
+              icon: _pageToIcon(p, theme),
+              label: Text(p.title),
+            ),
+          )
+          .toList(growable: false),
     );
   }
 
   BottomNavigationBar _buildBottomNav(
-    List<PageConfig> pages, {
+    Iterable<PageConfig> pages, {
     required ThemeData theme,
   }) {
     return BottomNavigationBar(
       onTap: _animateToPage,
       currentIndex: _pageIndex,
-      items: pagesToDestinations(
-        pages,
-        (p) => BottomNavigationBarItem(
-          icon: _pageToIcon(p, theme),
-          label: p.title,
-        ),
-      ),
+      items: pages
+          .map(
+            (p) => BottomNavigationBarItem(
+              icon: _pageToIcon(p, theme),
+              label: p.title,
+            ),
+          )
+          .toList(growable: false),
     );
   }
 
