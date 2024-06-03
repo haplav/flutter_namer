@@ -16,9 +16,8 @@ class BinPage extends StatelessWidget {
     FavoriteTile favoriteTile(WordPair wp) {
       return FavoriteTile(
         icon: Icons.delete_forever,
-        iconColor: theme.primaryColor,
         message: "Delete permanently",
-        tileTextStyle: theme.textTheme.bodyLarge,
+        theme: theme,
         wordPair: wp,
         onPressed: () => appState.deleteFavoritePermanently(wp),
       );

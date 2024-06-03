@@ -45,15 +45,15 @@ class FavoritesGrid extends StatelessWidget {
 }
 
 class FavoriteTile extends StatelessWidget {
-  const FavoriteTile({
+  FavoriteTile({
     super.key,
     required this.icon,
-    required this.iconColor,
     required this.message,
-    required this.tileTextStyle,
+    required ThemeData theme,
     required this.wordPair,
     required this.onPressed,
-  });
+  })  : iconColor = theme.primaryColor,
+        tileTextStyle = theme.textTheme.bodyMedium;
 
   final IconData icon;
   final Color iconColor;

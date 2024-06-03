@@ -28,9 +28,8 @@ class FavoritesPage extends StatelessWidget {
       }
       return FavoriteTile(
         icon: icon,
-        iconColor: theme.primaryColor,
         message: message,
-        tileTextStyle: theme.textTheme.bodyLarge,
+        theme: theme,
         wordPair: wp,
         onPressed: onPressed,
       );
