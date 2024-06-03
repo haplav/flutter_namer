@@ -9,6 +9,31 @@ class GeneratorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
+    var buttonRow = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ElevatedButton.icon(
+          onPressed: appState.toggleFavorite,
+          label: const Text("Like"),
+          icon: Icon(appState.isFavorite() ? Icons.favorite : Icons.favorite_border),
+        ),
+        const SizedBox(width: 10),
+        ElevatedButton.icon(
+          onPressed: () => history.next(appState),
+          icon: Icon(Icons.skip_next_rounded),
+          label: const Text('Next Idea'),
+        ),
+        const SizedBox(width: 10),
+        Tooltip(
+          message: "Purge the history of word pairs above",
+          child: ElevatedButton.icon(
+            onPressed: () => history.purge(appState),
+            icon: Icon(Icons.delete),
+            label: const Text('Purge'),
+          ),
+        ),
+      ],
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -24,31 +49,7 @@ class GeneratorPage extends StatelessWidget {
         FittedBox(child: BigWordPairCard(appState.current)),
         const SizedBox(height: 12),
         FittedBox(
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton.icon(
-                onPressed: appState.toggleFavorite,
-                label: const Text("Like"),
-                icon: Icon(appState.isFavorite() ? Icons.favorite : Icons.favorite_border),
-              ),
-              const SizedBox(width: 10),
-              ElevatedButton.icon(
-                onPressed: () => history.next(appState),
-                icon: Icon(Icons.skip_next_rounded),
-                label: const Text('Next Idea'),
-              ),
-              const SizedBox(width: 10),
-              Tooltip(
-                message: "Purge the history of word pairs above",
-                child: ElevatedButton.icon(
-                  onPressed: () => history.purge(appState),
-                  icon: Icon(Icons.delete),
-                  label: const Text('Purge'),
-                ),
-              ),
-            ],
-          ),
+          child: buttonRow,
         ),
         Expanded(child: SizedBox())
       ],
