@@ -56,31 +56,28 @@ class WordPairStorage {
 class MyAppState extends ChangeNotifier {
   MyAppState() : _current = _newPair() {
     loadFavorites();
-    _autosaveTimer = Timer.periodic(autosaveInterval, (_) => saveFavoritesIfChanged());
   }
 
   @override
   void dispose() {
     print("MyAppState disposed");
-    _autosaveTimer.cancel();
+    _autosaveTimer?.cancel();
     super.dispose();
   }
 
-  @override
-  void notifyListeners() {
-    _hasChanged = true;
-    super.notifyListeners();
+  void notifyListenersFavoritesChanged() {
+    _autosaveTimer ??= Timer(autosaveInterval, saveFavorites);
+    notifyListeners();
   }
 
+  static const autosaveInterval = Duration(seconds: 8);
+
   WordPair _current;
-  bool _hasChanged = false;
   final _history = <WordPair>[];
   final _favorites = <WordPair>{};
   final _deletedFavorites = <WordPair>{};
   final _favoritesStorage = WordPairStorage('favorites.txt');
-  late final Timer _autosaveTimer;
-
-  static const autosaveInterval = Duration(seconds: 5);
+  Timer? _autosaveTimer;
 
   WordPair get current => _current;
   WordPair? get previous => _history.isNotEmpty ? _history.last : null;
@@ -105,14 +102,9 @@ class MyAppState extends ChangeNotifier {
   }
 
   void saveFavorites() {
+    _autosaveTimer?.cancel();
+    _autosaveTimer = null;
     _favoritesStorage.save(_favorites, _deletedFavorites).then((file) => print("Saved favorites to $file"));
-    _hasChanged = false;
-  }
-
-  void saveFavoritesIfChanged() {
-    if (_hasChanged) {
-      saveFavorites();
-    }
   }
 
   void loadFavorites() {
@@ -129,7 +121,6 @@ class MyAppState extends ChangeNotifier {
       },
       onError: (error) => print('Failed to load favorites: $error'),
     );
-    notifyListeners();
   }
 
   void toggleFavorite([WordPair? wp]) {
@@ -142,7 +133,7 @@ class MyAppState extends ChangeNotifier {
       print("Permanently added ${wp.asPascalCase} to favorites");
     }
     _deletedFavorites.remove(wp);
-    notifyListeners();
+    notifyListenersFavoritesChanged();
   }
 
   void toggleFavoriteTemporarily([WordPair? wp]) {
@@ -156,14 +147,14 @@ class MyAppState extends ChangeNotifier {
         print("${wp.asPascalCase} temporarily removed from favorites");
       }
     }
-    notifyListeners();
+    notifyListenersFavoritesChanged();
   }
 
   void deleteFavoritePermanently([WordPair? wp]) {
     wp ??= current;
     _favorites.remove(wp);
     _deletedFavorites.remove(wp);
-    notifyListeners();
+    notifyListenersFavoritesChanged();
   }
 
   bool isInGeneratorPage(WordPair wp) => wp == current || _history.contains(wp);
@@ -179,23 +170,20 @@ class MyAppState extends ChangeNotifier {
   int pruneFavorites() {
     int count = _deletedFavorites.length;
     _favorites.removeAll(_deletedFavorites);
-    saveFavorites();
     _deletedFavorites.clear();
     print("Pruned $count favorites");
-    notifyListeners();
+    notifyListenersFavoritesChanged();
     return count;
   }
 
   void restoreFavorites() {
     print("Restored ${_deletedFavorites.length} favorites");
     _deletedFavorites.clear();
-    saveFavorites();
-    notifyListeners();
+    notifyListenersFavoritesChanged();
   }
 
   void deleteAllFavorites() {
     _deletedFavorites.addAll(_favorites);
-    saveFavorites();
-    notifyListeners();
+    notifyListenersFavoritesChanged();
   }
 }
