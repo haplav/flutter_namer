@@ -61,7 +61,7 @@ class WordPairStorage {
 
 class MyAppState extends ChangeNotifier {
   MyAppState() : _current = _newPair() {
-    loadFavorites();
+    loadFavorites().onError((error, stackTrace) => print('Failed to load favorites: $error'));
   }
 
   @override
@@ -107,26 +107,23 @@ class MyAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void saveFavorites() {
+  Future<void> saveFavorites() async {
     _autosaveTimer?.cancel();
     _autosaveTimer = null;
-    _favoritesStorage.save(_favorites, _deletedFavorites).then((file) => print("Saved favorites to $file"));
+    var file = await _favoritesStorage.save(_favorites, _deletedFavorites);
+    print("Saved favorites to $file");
   }
 
-  void loadFavorites() {
-    _favoritesStorage.load().then(
-      (tuple) {
-        final list = tuple.$1;
-        final deleted = tuple.$2;
-        _favorites.clear();
-        _favorites.addAll(list);
-        _deletedFavorites.clear();
-        _deletedFavorites.addAll(deleted);
-        notifyListeners();
-        print("Loaded favorites from file ${_favoritesStorage.filename}");
-      },
-      onError: (error) => print('Failed to load favorites: $error'),
-    );
+  Future<void> loadFavorites() async {
+    final tuple = await _favoritesStorage.load();
+    final list = tuple.$1;
+    final deleted = tuple.$2;
+    _favorites.clear();
+    _favorites.addAll(list);
+    _deletedFavorites.clear();
+    _deletedFavorites.addAll(deleted);
+    notifyListeners();
+    print("Loaded favorites from ${await _favoritesStorage.filePath}");
   }
 
   void toggleFavorite([WordPair? wp]) {
