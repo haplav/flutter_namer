@@ -4,20 +4,11 @@ import 'package:flutter_namer/state.dart';
 import 'package:provider/provider.dart';
 
 class GeneratorPage extends StatelessWidget {
-  final _historyAnimatedListKey = GlobalKey<AnimatedListState>();
+  final history = History();
 
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-    void next() {
-      appState.next();
-      _historyAnimatedListKey.currentState?.insertItem(0);
-    }
-
-    void purge() {
-      _historyAnimatedListKey.currentState?.removeAllItems((context, index) => const SizedBox());
-      appState.purgeHistory();
-    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -27,7 +18,7 @@ class GeneratorPage extends StatelessWidget {
           flex: 3,
           child: Padding(
             padding: const EdgeInsets.only(bottom: 8.0, top: 15.0),
-            child: History(animatedListKey: _historyAnimatedListKey),
+            child: history,
           ),
         ),
         FittedBox(child: BigWordPairCard(appState.current)),
@@ -43,7 +34,7 @@ class GeneratorPage extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               ElevatedButton.icon(
-                onPressed: next,
+                onPressed: () => history.next(appState),
                 icon: Icon(Icons.skip_next_rounded),
                 label: const Text('Next Idea'),
               ),
@@ -51,7 +42,7 @@ class GeneratorPage extends StatelessWidget {
               Tooltip(
                 message: "Purge the history of word pairs above",
                 child: ElevatedButton.icon(
-                  onPressed: purge,
+                  onPressed: () => history.purge(appState),
                   icon: Icon(Icons.delete),
                   label: const Text('Purge'),
                 ),
@@ -115,8 +106,7 @@ class BigWordPairCard extends StatelessWidget {
 class History extends StatelessWidget {
   History({
     super.key,
-    required this.animatedListKey,
-  });
+  }) : animatedListKey = GlobalKey<AnimatedListState>(debugLabel: 'History');
 
   final GlobalKey<AnimatedListState> animatedListKey;
   static const Gradient gradient = LinearGradient(
@@ -129,15 +119,12 @@ class History extends StatelessWidget {
     stops: [0.0, 0.4],
   );
 
-  @override
-  Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
-    List<WordPair> history = appState.history;
+  Widget _buildItem(BuildContext context, WordPair wp) {
+    final appState = Provider.of<MyAppState>(context);
     final TextStyle? textStyle = Theme.of(context).textTheme.bodyMedium;
 
-    // nested function
-    TextButton historyItemButton(WordPair wp) {
-      return TextButton.icon(
+    return Center(
+      child: TextButton.icon(
         onPressed: () => appState.toggleFavorite(wp),
         icon: Icon(
           appState.isFavorite(wp) ? Icons.favorite : Icons.favorite_border,
@@ -147,8 +134,35 @@ class History extends StatelessWidget {
           wp.asPascalCase,
           style: textStyle,
         ),
+      ),
+    );
+  }
+
+  void next(MyAppState appState) {
+    appState.next();
+    animatedListKey.currentState?.insertItem(0);
+  }
+
+  void purge(MyAppState appState) {
+    final len = appState.history.length;
+    for (int i = len - 1; i >= 0; i--) {
+      WordPair wp = appState.history[i];
+      animatedListKey.currentState?.removeItem(
+        i,
+        (context, animation) => FadeTransition(
+          opacity: animation,
+          child: _buildItem(context, wp),
+        ),
+        duration: Duration(milliseconds: (len - i) * 300),
       );
     }
+    appState.purgeHistory();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final appState = context.watch<MyAppState>();
+    final history = appState.history;
 
     return ShaderMask(
       shaderCallback: (bounds) => gradient.createShader(bounds),
@@ -162,9 +176,7 @@ class History extends StatelessWidget {
           return SizeTransition(
             sizeFactor: animation,
             axisAlignment: -1.0,
-            child: Center(
-              child: historyItemButton(history[index]),
-            ),
+            child: _buildItem(context, history[index]),
           );
         },
       ),
