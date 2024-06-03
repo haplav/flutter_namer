@@ -10,12 +10,16 @@ class WordPairStorage {
   WordPairStorage(this._filename);
 
   String _filename;
+  String? _directoryPath;
 
   String get filename => _filename;
 
   Future<String> get directoryPath async {
-    final directory = await getApplicationDocumentsDirectory();
-    return directory.path;
+    if (_directoryPath == null) {
+      final dir = await getApplicationDocumentsDirectory();
+      _directoryPath = dir.path;
+    }
+    return _directoryPath!;
   }
 
   Future<String> get filePath async {
