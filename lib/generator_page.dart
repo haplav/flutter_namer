@@ -4,15 +4,26 @@ import 'package:flutter_namer/state.dart';
 import 'package:provider/provider.dart';
 
 class GeneratorPage extends StatelessWidget {
+  final _historyAnimatedListKey = GlobalKey<AnimatedListState>();
+
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
+    void next() {
+      appState.next();
+      _historyAnimatedListKey.currentState?.insertItem(0);
+    }
+
+    void purge() {
+      _historyAnimatedListKey.currentState?.removeAllItems((context, index) => const SizedBox());
+      appState.purgeHistory();
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Expanded(flex: 3, child: History()),
+        Expanded(flex: 3, child: History(animatedListKey: _historyAnimatedListKey)),
         SizedBox(height: 10),
         FittedBox(child: BigWordPairCard(appState.current)),
         SizedBox(height: 10),
@@ -27,7 +38,7 @@ class GeneratorPage extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               ElevatedButton.icon(
-                onPressed: appState.next,
+                onPressed: next,
                 icon: Icon(Icons.skip_next_rounded),
                 label: const Text('Next Idea'),
               ),
@@ -35,7 +46,7 @@ class GeneratorPage extends StatelessWidget {
               Tooltip(
                 message: "Purge the history of word pairs above",
                 child: ElevatedButton.icon(
-                  onPressed: appState.purgeHistory,
+                  onPressed: purge,
                   icon: Icon(Icons.delete),
                   label: const Text('Purge'),
                 ),
@@ -96,7 +107,12 @@ class BigWordPairCard extends StatelessWidget {
 }
 
 class History extends StatelessWidget {
-  History({super.key});
+  History({
+    super.key,
+    required this.animatedListKey,
+  });
+
+  final GlobalKey<AnimatedListState> animatedListKey;
 
   @override
   Widget build(BuildContext context) {
@@ -119,14 +135,18 @@ class History extends StatelessWidget {
       );
     }
 
-    return ListView.builder(
+    return AnimatedList(
+      key: animatedListKey,
       padding: EdgeInsets.only(top: 50),
       reverse: true,
-      prototypeItem: historyItemButton(appState.current),
-      itemCount: history.length,
-      itemBuilder: (context, index) {
-        return Center(
-          child: historyItemButton(history[index]),
+      initialItemCount: history.length,
+      itemBuilder: (context, index, animation) {
+        return SizeTransition(
+          sizeFactor: animation,
+          axisAlignment: -1.0,
+          child: Center(
+            child: historyItemButton(history[index]),
+          ),
         );
       },
     );
