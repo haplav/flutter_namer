@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'bin_page.dart';
+import 'commons.dart';
 import 'favorites_page.dart';
 import 'generator_page.dart';
 import 'state.dart';
@@ -200,7 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _setPage(int index) {
     setState(() {
-      print('_MyHomePageState: selected $index');
+      log.d('_MyHomePageState: selected $index');
       _pageIndex = index;
     });
   }
