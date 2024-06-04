@@ -77,10 +77,13 @@ class BigWordPairCard extends StatelessWidget {
           margin: EdgeInsets.all(0),
           child: Padding(
             padding: const EdgeInsets.all(30),
-            child: SelectableText(
-              wordPair.asPascalCase,
-              style: theme.textTheme.displaySmall,
-              enableInteractiveSelection: true,
+            child: AnimatedSize(
+              duration: Durations.short3,
+              child: SelectableText(
+                wordPair.asPascalCase,
+                style: theme.textTheme.displaySmall,
+                enableInteractiveSelection: true,
+              ),
             ),
           ),
         ),
