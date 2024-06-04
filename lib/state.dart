@@ -5,12 +5,12 @@ import 'package:english_words/english_words.dart';
 import 'package:flutter/foundation.dart';
 
 import 'commons.dart';
-import 'storage_impl/path_provider.dart';
+import 'storage.dart';
 
 class MyAppState extends ChangeNotifier {
   MyAppState() : _current = _newPair() {
     loadFavorites().onError((error, stackTrace) {
-      log.e('Failed to load favorites: $error', stackTrace: stackTrace);
+      log.e('Failed to load $favoritesName: $error', stackTrace: stackTrace);
     });
   }
 
@@ -26,13 +26,14 @@ class MyAppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  static const favoritesName = 'favorites';
   static const autosaveInterval = Duration(seconds: 5);
 
   WordPair _current;
   final _history = <WordPair>[];
   final _favorites = <WordPair>{};
   final _deletedFavorites = <WordPair>{};
-  final _favoritesStorage = WordPairStorage('favorites.txt');
+  final _favoritesStorage = WordPairStorage(favoritesName);
   Timer? _autosaveTimer;
 
   WordPair get current => _current;
@@ -78,10 +79,10 @@ class MyAppState extends ChangeNotifier {
     wp ??= current;
     if (isFavorite(wp)) {
       _favorites.remove(wp);
-      log.d("Permanently removed ${wp.asPascalCase} from favorites");
+      log.d("Permanently removed ${wp.asPascalCase} from $favoritesName");
     } else {
       _favorites.add(wp);
-      log.d("Permanently added ${wp.asPascalCase} to favorites");
+      log.d("Permanently added ${wp.asPascalCase} to $favoritesName");
     }
     _deletedFavorites.remove(wp);
     notifyListenersFavoritesChanged();
@@ -91,11 +92,11 @@ class MyAppState extends ChangeNotifier {
     wp ??= current;
     if (_deletedFavorites.contains(wp)) {
       _deletedFavorites.remove(wp);
-      log.d("${wp.asPascalCase} added back to favorites");
+      log.d("${wp.asPascalCase} added back to $favoritesName");
     } else {
       if (_favorites.contains(wp)) {
         _deletedFavorites.add(wp);
-        log.d("${wp.asPascalCase} temporarily removed from favorites");
+        log.d("${wp.asPascalCase} temporarily removed from $favoritesName");
       }
     }
     notifyListenersFavoritesChanged();
@@ -105,7 +106,7 @@ class MyAppState extends ChangeNotifier {
     wp ??= current;
     _favorites.remove(wp);
     _deletedFavorites.remove(wp);
-    log.d("Permanently deleted ${wp.asPascalCase} from favorites");
+    log.d("Permanently deleted ${wp.asPascalCase} from $favoritesName");
     notifyListenersFavoritesChanged();
   }
 
@@ -123,20 +124,20 @@ class MyAppState extends ChangeNotifier {
     int count = _deletedFavorites.length;
     _favorites.removeAll(_deletedFavorites);
     _deletedFavorites.clear();
-    log.d("Pruned $count favorites");
+    log.d("Pruned $count $favoritesName");
     notifyListenersFavoritesChanged();
     return count;
   }
 
   void restoreFavorites() {
-    log.d("Restored ${_deletedFavorites.length} favorites");
+    log.d("Restored ${_deletedFavorites.length} $favoritesName");
     _deletedFavorites.clear();
     notifyListenersFavoritesChanged();
   }
 
   void deleteAllFavorites() {
     _deletedFavorites.addAll(_favorites);
-    log.d("${_deletedFavorites.length} favorites temporarily deleted");
+    log.d("${_deletedFavorites.length} $favoritesName temporarily deleted");
     notifyListenersFavoritesChanged();
   }
 }

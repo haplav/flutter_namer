@@ -4,9 +4,14 @@ import 'package:english_words/english_words.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../commons.dart';
+import '../storage.dart';
 
-class WordPairStorage {
-  WordPairStorage(this._filename);
+WordPairStorage getWordPairStorageImpl(String name) => PathProviderWordPairStorage(name);
+
+class PathProviderWordPairStorage implements WordPairStorage {
+  PathProviderWordPairStorage(String name) : _filename = '$name.txt' {
+    log.i("Created PathProviderWordPairStorage for $_filename");
+  }
 
   String _filename;
   String? _directoryPath;
@@ -29,6 +34,7 @@ class WordPairStorage {
     return File(await filePath);
   }
 
+  @override
   Future<void> save(Iterable<WordPair> list, Set<WordPair> deleted) async {
     final contents =
         list.map((pair) => "${pair.first} ${pair.second}${deleted.contains(pair) ? ' *' : ''}").join('\n');
@@ -37,6 +43,7 @@ class WordPairStorage {
     log.i("Saved ${list.length} word pairs to $f, of which ${deleted.length} are deleted");
   }
 
+  @override
   Future<(List<WordPair>, Set<WordPair>)> load() async {
     final f = await file;
     final List<WordPair> list = <WordPair>[];
