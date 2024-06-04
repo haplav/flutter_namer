@@ -60,8 +60,7 @@ class MyAppState extends ChangeNotifier {
   Future<void> saveFavorites() async {
     _autosaveTimer?.cancel();
     _autosaveTimer = null;
-    var file = await _favoritesStorage.save(_favorites, _deletedFavorites);
-    log.i("Saved favorites to $file");
+    _favoritesStorage.save(_favorites, _deletedFavorites);
   }
 
   Future<void> loadFavorites() async {
@@ -73,7 +72,6 @@ class MyAppState extends ChangeNotifier {
     _deletedFavorites.clear();
     _deletedFavorites.addAll(deleted);
     notifyListeners();
-    log.i("Loaded favorites from ${await _favoritesStorage.filePath}");
   }
 
   void toggleFavorite([WordPair? wp]) {

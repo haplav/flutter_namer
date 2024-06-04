@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:english_words/english_words.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../commons.dart';
+
 class WordPairStorage {
   WordPairStorage(this._filename);
 
@@ -27,13 +29,12 @@ class WordPairStorage {
     return File(await filePath);
   }
 
-  Future<File> save(Iterable<WordPair> wordPairs, Set<WordPair> deleted) async {
-    final contents = wordPairs
-        .map((pair) => "${pair.first} ${pair.second}${deleted.contains(pair) ? ' *' : ''}")
-        .join('\n');
+  Future<void> save(Iterable<WordPair> list, Set<WordPair> deleted) async {
+    final contents =
+        list.map((pair) => "${pair.first} ${pair.second}${deleted.contains(pair) ? ' *' : ''}").join('\n');
     final f = await file;
     f.writeAsString(contents);
-    return f;
+    log.i("Saved ${list.length} word pairs to $f, of which ${deleted.length} are deleted");
   }
 
   Future<(List<WordPair>, Set<WordPair>)> load() async {
@@ -52,6 +53,7 @@ class WordPairStorage {
         }
       }
     }
+    log.i("Loaded ${list.length} word pairs and ${deleted.length} deleted word pairs from $f");
     return (list, deleted);
   }
 }
