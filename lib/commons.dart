@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
 final log = Logger();
-final logNoStack = Logger(
-  printer: PrettyPrinter(methodCount: 0),
-);
 
 class HyperlinkSpan extends TextSpan {
   HyperlinkSpan({
