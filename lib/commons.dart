@@ -38,4 +38,22 @@ mixin Messaging {
       messenger(msg, replace);
     }
   }
+
+  static void toast(ScaffoldMessengerState messenger, String msg, bool replace) {
+    if (replace) {
+      messenger.clearSnackBars();
+    }
+    messenger.showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.black.withOpacity(0.4),
+        behavior: SnackBarBehavior.floating,
+        elevation: 4,
+        content: Text(msg),
+      ),
+    );
+  }
+
+  static Messenger toastMessenger(ScaffoldMessengerState scaffoldMessenger) {
+    return (msg, replace) => toast(scaffoldMessenger, msg, replace);
+  }
 }

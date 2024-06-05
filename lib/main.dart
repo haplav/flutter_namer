@@ -39,13 +39,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => MyAppState(),
-      child: MaterialApp(
-        title: 'My Name Generator App',
-        theme: _theme(),
-        home: Scaffold(
-          body: MyHomePage(),
+    return MaterialApp(
+      title: 'My Name Generator App',
+      theme: _theme(),
+      home: Scaffold(
+        body: Builder(
+          builder: (scaffoldContext) => ChangeNotifierProvider<MyAppState>(
+            create: (context) {
+              // scaffoldContext can access the Scaffold above it in the widget tree;
+              // context here is the context where ChangeNotifierProvider is placed
+              final appState = MyAppState();
+              final scaffoldMsgr = ScaffoldMessenger.of(scaffoldContext);
+              appState.addMessenger(Messaging.toastMessenger(scaffoldMsgr));
+              return appState;
+            },
+            child: MyHomePage(),
+          ),
         ),
       ),
     );
