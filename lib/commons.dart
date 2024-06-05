@@ -46,9 +46,12 @@ mixin Messaging {
     messenger.showSnackBar(
       SnackBar(
         backgroundColor: Colors.black.withOpacity(0.4),
-        behavior: SnackBarBehavior.floating,
+        behavior: SnackBarBehavior.fixed,
         elevation: 4,
-        content: Text(msg),
+        content: GestureDetector(
+          onTap: messenger.clearSnackBars,
+          child: Text(msg),
+        ),
       ),
     );
   }
