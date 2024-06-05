@@ -55,6 +55,7 @@ class MyAppState extends ChangeNotifier {
 
   void purgeHistory() {
     _history.clear();
+    _current = _newPair();
     notifyListeners();
   }
 
