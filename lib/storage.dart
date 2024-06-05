@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:english_words/english_words.dart';
 
+import 'commons.dart';
 import 'storage_impl/none.dart'
     if (dart.library.io) 'storage_impl/path_provider.dart'
     if (dart.library.html) 'storage_impl/web.dart';
@@ -23,12 +24,26 @@ abstract class WordPairStorage {
     List<WordPair> pairs = <WordPair>[];
     Set<WordPair> deleted = <WordPair>{};
     for (final string in strings) {
-      final words = string.split(' ');
-      final pair = WordPair(words[0], words[1]);
-      pairs.add(pair);
-      if (words.length > 2 && words[2] == '*') {
-        deleted.add(pair);
+      if (string.isEmpty) {
+        log.i('Skipping empty line');
+        continue;
       }
+
+      final words = string.split(' ');
+      if (words.length < 2) {
+        log.w('Skipping invalid line: "$string"');
+        continue;
+      }
+      final pair = WordPair(words[0], words[1]);
+      if (words.length > 2) {
+        if (words[2] == '*') {
+          deleted.add(pair);
+        } else {
+          log.w('Skipping invalid line: "$string"');
+          continue;
+        }
+      }
+      pairs.add(pair);
     }
     return (pairs, deleted);
   }
