@@ -30,8 +30,8 @@ class FavoritesGrid extends StatelessWidget {
             child: GridView(
               padding: EdgeInsets.zero,
               gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 270,
-                childAspectRatio: 270 / 50,
+                maxCrossAxisExtent: 400,
+                childAspectRatio: 8,
                 crossAxisSpacing: spacing,
                 mainAxisSpacing: spacing,
               ),
@@ -58,7 +58,7 @@ class FavoriteTile extends StatelessWidget {
     this.trailingIcon,
     required ThemeData theme,
   })  : iconColor = theme.primaryColor,
-        tileTextStyle = theme.textTheme.bodyMedium;
+        tileTextStyle = theme.textTheme.bodyLarge;
 
   final WordPair wordPair;
   final IconConfig leadingIcon;
@@ -68,7 +68,7 @@ class FavoriteTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final iconSize = (tileTextStyle?.fontSize ?? 16) * 1.6;
+    final iconSize = (tileTextStyle?.fontSize ?? 16) * 1.4;
     return ListTile(
       contentPadding: EdgeInsets.zero,
       titleAlignment: ListTileTitleAlignment.center,
