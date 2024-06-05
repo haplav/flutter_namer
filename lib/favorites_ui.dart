@@ -44,29 +44,25 @@ class FavoritesGrid extends StatelessWidget {
   }
 }
 
+typedef IconConfig = ({
+  IconData icon,
+  String message,
+  VoidCallback? onPressed,
+});
+
 class FavoriteTile extends StatelessWidget {
   FavoriteTile({
     super.key,
     required this.wordPair,
-    required this.icon,
-    required this.iconMessage,
-    required this.iconOnPressed,
+    required this.leadingIcon,
     this.trailingIcon,
-    this.trailingIconMessage,
-    this.trailingIconOnPressed,
     required ThemeData theme,
   })  : iconColor = theme.primaryColor,
-        tileTextStyle = theme.textTheme.bodyMedium {
-    assert((trailingIcon == null) == (trailingIconOnPressed == null));
-  }
+        tileTextStyle = theme.textTheme.bodyMedium;
 
   final WordPair wordPair;
-  final IconData icon;
-  final String iconMessage;
-  final VoidCallback iconOnPressed;
-  final IconData? trailingIcon;
-  final String? trailingIconMessage;
-  final VoidCallback? trailingIconOnPressed;
+  final IconConfig leadingIcon;
+  final IconConfig? trailingIcon;
   final Color iconColor;
   final TextStyle? tileTextStyle;
 
@@ -79,12 +75,12 @@ class FavoriteTile extends StatelessWidget {
       leading: IconButton(
         padding: EdgeInsets.all(2),
         icon: Icon(
-          icon,
+          leadingIcon.icon,
           color: iconColor,
           size: iconSize,
         ),
-        onPressed: iconOnPressed,
-        tooltip: iconMessage,
+        onPressed: leadingIcon.onPressed,
+        tooltip: leadingIcon.message,
       ),
       title: SelectableText(
         wordPair.asPascalCase,
@@ -95,12 +91,12 @@ class FavoriteTile extends StatelessWidget {
           : IconButton(
               padding: EdgeInsets.all(2),
               icon: Icon(
-                trailingIcon,
+                trailingIcon!.icon,
                 color: iconColor,
                 size: iconSize,
               ),
-              onPressed: trailingIconOnPressed,
-              tooltip: trailingIconMessage,
+              onPressed: trailingIcon!.onPressed,
+              tooltip: trailingIcon!.message,
             ),
     );
   }

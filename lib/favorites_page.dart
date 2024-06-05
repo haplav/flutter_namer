@@ -28,9 +28,11 @@ class FavoritesPage extends StatelessWidget {
       }
       return FavoriteTile(
         wordPair: wp,
-        icon: icon,
-        iconMessage: iconMessage,
-        iconOnPressed: iconOnPressed,
+        leadingIcon: (
+          icon: icon,
+          message: iconMessage,
+          onPressed: iconOnPressed,
+        ),
         theme: theme,
       );
     }
