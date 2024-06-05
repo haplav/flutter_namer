@@ -15,11 +15,14 @@ class BinPage extends StatelessWidget {
 
     FavoriteTile favoriteTile(WordPair wp) {
       return FavoriteTile(
-        icon: Icons.delete_forever,
-        message: "Delete permanently",
-        theme: theme,
         wordPair: wp,
-        onPressed: () => appState.deleteFavoritePermanently(wp),
+        icon: Icons.undo,
+        iconMessage: "Restore",
+        iconOnPressed: () => appState.toggleFavoriteTemporarily(wp),
+        trailingIcon: Icons.delete_forever,
+        trailingIconMessage: "Delete permanently",
+        trailingIconOnPressed: () => appState.deleteFavoritePermanently(wp),
+        theme: theme,
       );
     }
 

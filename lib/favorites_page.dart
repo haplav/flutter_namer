@@ -14,24 +14,24 @@ class FavoritesPage extends StatelessWidget {
     final theme = Theme.of(context);
 
     FavoriteTile favoriteTile(WordPair wp) {
-      final VoidCallback onPressed;
       final IconData icon;
-      final String message;
+      final String iconMessage;
+      final VoidCallback iconOnPressed;
       if (appState.isInGeneratorPage(wp) && !appState.isDeleted(wp)) {
         icon = Icons.delete;
-        message = "Delete (still visible in Home)";
-        onPressed = () => appState.toggleFavorite(wp);
+        iconMessage = "Delete (still visible in Home)";
+        iconOnPressed = () => appState.toggleFavorite(wp);
       } else {
         icon = !appState.isDeleted(wp) ? Icons.favorite : Icons.favorite_border;
-        message = "Toggle favorite";
-        onPressed = () => appState.toggleFavoriteTemporarily(wp);
+        iconMessage = "Toggle favorite";
+        iconOnPressed = () => appState.toggleFavoriteTemporarily(wp);
       }
       return FavoriteTile(
-        icon: icon,
-        message: message,
-        theme: theme,
         wordPair: wp,
-        onPressed: onPressed,
+        icon: icon,
+        iconMessage: iconMessage,
+        iconOnPressed: iconOnPressed,
+        theme: theme,
       );
     }
 

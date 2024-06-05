@@ -30,8 +30,8 @@ class FavoritesGrid extends StatelessWidget {
             child: GridView(
               padding: EdgeInsets.zero,
               gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 300,
-                childAspectRatio: 300 / 50,
+                maxCrossAxisExtent: 270,
+                childAspectRatio: 270 / 50,
                 crossAxisSpacing: spacing,
                 mainAxisSpacing: spacing,
               ),
@@ -47,40 +47,61 @@ class FavoritesGrid extends StatelessWidget {
 class FavoriteTile extends StatelessWidget {
   FavoriteTile({
     super.key,
-    required this.icon,
-    required this.message,
-    required ThemeData theme,
     required this.wordPair,
-    required this.onPressed,
+    required this.icon,
+    required this.iconMessage,
+    required this.iconOnPressed,
+    this.trailingIcon,
+    this.trailingIconMessage,
+    this.trailingIconOnPressed,
+    required ThemeData theme,
   })  : iconColor = theme.primaryColor,
-        tileTextStyle = theme.textTheme.bodyMedium;
+        tileTextStyle = theme.textTheme.bodyMedium {
+    assert((trailingIcon == null) == (trailingIconOnPressed == null));
+  }
 
-  final IconData icon;
-  final Color iconColor;
-  final String message;
-  final TextStyle? tileTextStyle;
   final WordPair wordPair;
-  final VoidCallback onPressed;
+  final IconData icon;
+  final String iconMessage;
+  final VoidCallback iconOnPressed;
+  final IconData? trailingIcon;
+  final String? trailingIconMessage;
+  final VoidCallback? trailingIconOnPressed;
+  final Color iconColor;
+  final TextStyle? tileTextStyle;
 
   @override
   Widget build(BuildContext context) {
+    final iconSize = (tileTextStyle?.fontSize ?? 16) * 1.6;
     return ListTile(
+      contentPadding: EdgeInsets.zero,
       titleAlignment: ListTileTitleAlignment.center,
       leading: IconButton(
         padding: EdgeInsets.all(2),
         icon: Icon(
           icon,
           color: iconColor,
-          size: (tileTextStyle?.fontSize ?? 16) * 1.5,
+          size: iconSize,
         ),
-        onPressed: onPressed,
-        tooltip: message,
+        onPressed: iconOnPressed,
+        tooltip: iconMessage,
       ),
       title: SelectableText(
         wordPair.asPascalCase,
         style: tileTextStyle,
       ),
-      contentPadding: EdgeInsets.zero,
+      trailing: trailingIcon == null
+          ? null
+          : IconButton(
+              padding: EdgeInsets.all(2),
+              icon: Icon(
+                trailingIcon,
+                color: iconColor,
+                size: iconSize,
+              ),
+              onPressed: trailingIconOnPressed,
+              tooltip: trailingIconMessage,
+            ),
     );
   }
 }
