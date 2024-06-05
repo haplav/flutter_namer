@@ -36,34 +36,38 @@ class FavoritesPage extends StatelessWidget {
     }
 
     RichText message() {
+      var nFavorites = appState.actualFavoritesCount;
+      var nDeleted = appState.deletedFavorites.length;
       return RichText(
         text: TextSpan(
           style: theme.textTheme.bodyLarge,
           children: [
             TextSpan(text: 'You have '),
             TextSpan(
-              text: '${appState.actualFavoritesCount} ',
+              text: '$nFavorites ',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             TextSpan(text: 'favorites and '),
             TextSpan(
-              text: '${appState.deletedFavorites.length} ',
+              text: '$nDeleted ',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             TextSpan(text: 'temporarily deleted. '),
-            TextSpan(text: 'You can '),
-            HyperlinkSpan(
-              text: 'delete',
-              theme: theme,
-              onTap: appState.deleteAllFavorites,
-            ),
-            TextSpan(text: ' or '),
-            HyperlinkSpan(
-              text: 'restore',
-              theme: theme,
-              onTap: appState.restoreFavorites,
-            ),
-            TextSpan(text: ' all your favorites at once.'),
+            if (nFavorites > 0 || nDeleted > 0) ...[
+              TextSpan(text: 'You can '),
+              HyperlinkSpan(
+                text: 'delete',
+                theme: theme,
+                onTap: appState.deleteAllFavorites,
+              ),
+              TextSpan(text: ' or '),
+              HyperlinkSpan(
+                text: 'restore',
+                theme: theme,
+                onTap: appState.restoreFavorites,
+              ),
+              TextSpan(text: ' all your favorites at once.'),
+            ]
           ],
         ),
       );

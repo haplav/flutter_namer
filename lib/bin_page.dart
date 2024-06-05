@@ -24,23 +24,26 @@ class BinPage extends StatelessWidget {
     }
 
     RichText message() {
+      final nDeleted = appState.deletedFavorites.length;
       return RichText(
         text: TextSpan(
           style: theme.textTheme.bodyLarge,
           children: [
             TextSpan(text: 'You have '),
             TextSpan(
-              text: '${appState.deletedFavorites.length} ',
+              text: '$nDeleted ',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             TextSpan(text: 'temporarily deleted favorites. '),
-            TextSpan(text: 'You can '),
-            HyperlinkSpan(
-              text: 'delete them permanently',
-              theme: theme,
-              onTap: appState.pruneFavorites,
-            ),
-            TextSpan(text: " so they disappear for good."),
+            if (nDeleted > 0) ...[
+              TextSpan(text: 'You can '),
+              HyperlinkSpan(
+                text: 'delete them permanently',
+                theme: theme,
+                onTap: appState.pruneFavorites,
+              ),
+              TextSpan(text: " so they disappear for good."),
+            ],
           ],
         ),
       );
