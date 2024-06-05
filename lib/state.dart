@@ -7,11 +7,12 @@ import 'package:flutter/foundation.dart';
 import 'commons.dart';
 import 'storage.dart';
 
-class MyAppState extends ChangeNotifier {
+class MyAppState extends ChangeNotifier with Messaging {
   MyAppState() : _current = _newPair() {
     loadFavorites().onError((error, stackTrace) {
       log.e('Failed to load $favoritesName: $error', stackTrace: stackTrace);
     });
+    addMessenger((msg, replace) => log.i(msg));
   }
 
   @override
@@ -19,6 +20,12 @@ class MyAppState extends ChangeNotifier {
     log.d("MyAppState $this disposed");
     _autosaveTimer?.cancel();
     super.dispose();
+  }
+
+  @override
+  void addMessenger(Messenger messenger) {
+    super.addMessenger(messenger);
+    _favoritesStorage.addMessenger(messenger);
   }
 
   void notifyListenersFavoritesChanged() {
@@ -80,10 +87,10 @@ class MyAppState extends ChangeNotifier {
     wp ??= current;
     if (isFavorite(wp)) {
       _favorites.remove(wp);
-      log.d("Permanently removed ${wp.asPascalCase} from $favoritesName");
+      log.d("Deleted ${wp.asPascalCase} from $favoritesName");
     } else {
       _favorites.add(wp);
-      log.d("Permanently added ${wp.asPascalCase} to $favoritesName");
+      log.d("Added ${wp.asPascalCase} to $favoritesName");
     }
     _deletedFavorites.remove(wp);
     notifyListenersFavoritesChanged();
@@ -97,7 +104,7 @@ class MyAppState extends ChangeNotifier {
     } else {
       if (_favorites.contains(wp)) {
         _deletedFavorites.add(wp);
-        log.d("${wp.asPascalCase} temporarily removed from $favoritesName");
+        log.d("${wp.asPascalCase} moved from $favoritesName Bin");
       }
     }
     notifyListenersFavoritesChanged();
@@ -107,7 +114,7 @@ class MyAppState extends ChangeNotifier {
     wp ??= current;
     _favorites.remove(wp);
     _deletedFavorites.remove(wp);
-    log.d("Permanently deleted ${wp.asPascalCase} from $favoritesName");
+    log.d("Deleted ${wp.asPascalCase} from $favoritesName");
     notifyListenersFavoritesChanged();
   }
 
@@ -125,20 +132,20 @@ class MyAppState extends ChangeNotifier {
     int count = _deletedFavorites.length;
     _favorites.removeAll(_deletedFavorites);
     _deletedFavorites.clear();
-    log.d("Pruned $count $favoritesName");
+    message("Pruned $count $favoritesName");
     notifyListenersFavoritesChanged();
     return count;
   }
 
   void restoreFavorites() {
-    log.d("Restored ${_deletedFavorites.length} $favoritesName");
+    message("Restored ${_deletedFavorites.length} $favoritesName from Bin");
     _deletedFavorites.clear();
     notifyListenersFavoritesChanged();
   }
 
   void deleteAllFavorites() {
     _deletedFavorites.addAll(_favorites);
-    log.d("${_deletedFavorites.length} $favoritesName temporarily deleted");
+    message("${_deletedFavorites.length} moved from $favoritesName to Bin");
     notifyListenersFavoritesChanged();
   }
 }

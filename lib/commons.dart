@@ -19,3 +19,23 @@ class HyperlinkSpan extends TextSpan {
           ),
         );
 }
+
+typedef Messenger = void Function(String, bool replace);
+
+mixin Messaging {
+  final _messengers = <Messenger>{};
+
+  void addMessenger(Messenger messenger) {
+    _messengers.add(messenger);
+  }
+
+  void removeMessenger(Messenger messenger) {
+    _messengers.add(messenger);
+  }
+
+  void message(String msg, {bool replace = false}) {
+    for (final messenger in _messengers) {
+      messenger(msg, replace);
+    }
+  }
+}

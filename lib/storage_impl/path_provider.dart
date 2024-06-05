@@ -8,20 +8,21 @@ import '../storage.dart';
 
 WordPairStorage getWordPairStorageImpl(String name) => PathProviderWordPairStorage(name);
 
-class PathProviderWordPairStorage implements WordPairStorage {
-  PathProviderWordPairStorage(String name) : _file = _createFileIfNotExists('$name.txt') {
-    _file.then((file) => log.i("PathProviderWordPairStorage is ready for\n$file"));
+class PathProviderWordPairStorage with Messaging implements WordPairStorage {
+  PathProviderWordPairStorage(String name) {
+    _file = _createFileIfNotExists('$name.txt');
+    _file.then((file) => log.i('PathProviderWordPairStorage is ready for\n$file'));
   }
 
-  final Future<File> _file;
+  late final Future<File> _file;
 
-  static Future<File> _createFileIfNotExists(String filename) async {
+  Future<File> _createFileIfNotExists(String filename) async {
     final dir = await path_provider.getApplicationDocumentsDirectory();
     final filePath = '${dir.path}/$filename';
     var f = File(filePath);
     if (!await f.exists()) {
       f = await f.create();
-      log.i("Created new data file\n$f");
+      message('Created new data file\n${f.path}');
     }
     assert(await f.exists());
     return f;
@@ -32,7 +33,10 @@ class PathProviderWordPairStorage implements WordPairStorage {
     final f = await _file;
     final contents = WordPairStorage.pairsToStrings(list, deleted).join('\n');
     f.writeAsString(contents);
-    log.i("Saved ${list.length} word pairs to\n$f\nof which ${deleted.length} are deleted");
+    message(
+      'Saved ${list.length} word pairs including ${deleted.length} deleted to\n${f.path}',
+      replace: true,
+    );
   }
 
   @override
@@ -45,7 +49,9 @@ class PathProviderWordPairStorage implements WordPairStorage {
     final contents = await f.readAsString();
     final lines = contents.split('\n');
     final (list, deleted) = WordPairStorage.stringsToPairs(lines);
-    log.i("Loaded ${list.length} word pairs and ${deleted.length} deleted word pairs from\n$f");
+    if (list.isNotEmpty) {
+      message('Loaded ${list.length} word pairs including ${deleted.length} deleted from\n${f.path}');
+    }
     return (list, deleted);
   }
 }
