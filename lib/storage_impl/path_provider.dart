@@ -10,7 +10,7 @@ WordPairStorage getWordPairStorageImpl(String name) => PathProviderWordPairStora
 
 class PathProviderWordPairStorage implements WordPairStorage {
   PathProviderWordPairStorage(String name) : _file = _createFileIfNotExists('$name.txt') {
-    _file.then((file) => log.i("PathProviderWordPairStorage is ready for $file"));
+    _file.then((file) => log.i("PathProviderWordPairStorage is ready for\n$file"));
   }
 
   final Future<File> _file;
@@ -21,7 +21,7 @@ class PathProviderWordPairStorage implements WordPairStorage {
     var f = File(filePath);
     if (!await f.exists()) {
       f = await f.create();
-      log.i("Created new data file $f");
+      log.i("Created new data file\n$f");
     }
     assert(await f.exists());
     return f;
@@ -32,7 +32,7 @@ class PathProviderWordPairStorage implements WordPairStorage {
     final f = await _file;
     final contents = WordPairStorage.pairsToStrings(list, deleted).join('\n');
     f.writeAsString(contents);
-    log.i("Saved ${list.length} word pairs to $f, of which ${deleted.length} are deleted");
+    log.i("Saved ${list.length} word pairs to\n$f\nof which ${deleted.length} are deleted");
   }
 
   @override
@@ -43,9 +43,9 @@ class PathProviderWordPairStorage implements WordPairStorage {
       return (<WordPair>[], <WordPair>{});
     }
     final contents = await f.readAsString();
-    final lines = contents.isNotEmpty ? contents.split('\n') : <String>[];
+    final lines = contents.split('\n');
     final (list, deleted) = WordPairStorage.stringsToPairs(lines);
-    log.i("Loaded ${list.length} word pairs and ${deleted.length} deleted word pairs from $f");
+    log.i("Loaded ${list.length} word pairs and ${deleted.length} deleted word pairs from\n$f");
     return (list, deleted);
   }
 }
