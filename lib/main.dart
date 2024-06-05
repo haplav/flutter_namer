@@ -149,7 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
   // Set the icon overlay numbers from appState
   void _setIconOverlayNumbers(MyAppState appState) {
     widget.pages
-      ..[PageType.generator]?.iconOverlayNumber = appState.history.length
+      ..[PageType.generator]?.iconOverlayNumber = appState.history.length + 1
       ..[PageType.favorites]?.iconOverlayNumber = appState.actualFavoritesCount
       ..[PageType.bin]?.iconOverlayNumber = appState.deletedFavorites.length;
   }
