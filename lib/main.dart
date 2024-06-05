@@ -121,7 +121,9 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final appState = context.watch<MyAppState>();
     final theme = Theme.of(context);
-    final width = MediaQuery.of(context).size.width;
+    final screenSize = MediaQuery.of(context).size;
+    final height = screenSize.height;
+    final width = screenSize.width;
     final Iterable<PageConfig> pages = widget.pages.values;
     final mainArea = Container(
       color: theme.colorScheme.primaryContainer,
@@ -138,7 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
       throw UnimplementedError('no widget with index $_pageIndex');
     }
 
-    if (width < 450) {
+    if (width < 500 || height / width > 1.2) {
       return Column(
         children: [
           Expanded(child: mainArea),
