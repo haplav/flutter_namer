@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:english_words/english_words.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
 
 import '../commons.dart';
 import '../storage.dart';
@@ -20,7 +20,7 @@ class PathProviderWordPairStorage implements WordPairStorage {
 
   Future<String> get directoryPath async {
     if (_directoryPath == null) {
-      final dir = await getApplicationDocumentsDirectory();
+      final dir = await path_provider.getApplicationDocumentsDirectory();
       _directoryPath = dir.path;
     }
     return _directoryPath!;
