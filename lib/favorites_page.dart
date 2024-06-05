@@ -52,21 +52,21 @@ class FavoritesPage extends StatelessWidget {
               text: '$nDeleted ',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            TextSpan(text: 'temporarily deleted. '),
+            TextSpan(text: 'are in the bin. '),
             if (nFavorites > 0 || nDeleted > 0) ...[
               TextSpan(text: 'You can '),
               HyperlinkSpan(
-                text: 'delete',
+                text: 'delete all',
                 theme: theme,
                 onTap: appState.deleteAllFavorites,
               ),
               TextSpan(text: ' or '),
               HyperlinkSpan(
-                text: 'restore',
+                text: 'restore all',
                 theme: theme,
                 onTap: appState.restoreFavorites,
               ),
-              TextSpan(text: ' all your favorites at once.'),
+              TextSpan(text: ' your favorites at once.'),
             ]
           ],
         ),
