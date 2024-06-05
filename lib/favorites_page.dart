@@ -18,8 +18,8 @@ class FavoritesPage extends StatelessWidget {
       final IconData icon;
       final String message;
       if (appState.isInGeneratorPage(wp) && !appState.isDeleted(wp)) {
-        icon = Icons.cancel_sharp;
-        message = "Remove from favorites (still visible in Home)";
+        icon = Icons.delete;
+        message = "Delete (still visible in Home)";
         onPressed = () => appState.toggleFavorite(wp);
       } else {
         icon = !appState.isDeleted(wp) ? Icons.favorite : Icons.favorite_border;
