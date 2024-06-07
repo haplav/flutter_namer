@@ -157,7 +157,7 @@ class History extends StatelessWidget {
           opacity: animation,
           child: _buildItem(context, wp),
         ),
-        duration: Durations.short3 * (len - i),
+        duration: Durations.short4 * (len - i),
       );
     }
     appState.purgeHistory();
