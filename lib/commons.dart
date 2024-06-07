@@ -48,6 +48,7 @@ mixin Messaging {
         backgroundColor: Colors.black.withOpacity(0.4),
         behavior: SnackBarBehavior.fixed,
         elevation: 4,
+        duration: Duration(seconds: 3),
         content: GestureDetector(
           onTap: messenger.clearSnackBars,
           child: Text(msg),
