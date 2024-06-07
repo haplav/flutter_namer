@@ -23,7 +23,8 @@ class MyAppState extends ChangeNotifier with Messaging {
   }
 
   void notifyListenersFavoritesChanged() {
-    _autosaveTimer ??= Timer(autosaveInterval, saveFavorites);
+    _autosaveTimer?.cancel();
+    _autosaveTimer = Timer(autosaveInterval, saveFavorites);
     notifyListeners();
   }
 
