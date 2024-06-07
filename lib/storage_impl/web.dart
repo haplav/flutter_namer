@@ -9,9 +9,9 @@ import '../storage.dart';
 
 WordPairStorage getWordPairStorageImpl(String name) => WebWordPairStorage(name);
 
-class WebWordPairStorage with Messaging implements WordPairStorage {
+class WebWordPairStorage implements WordPairStorage {
   WebWordPairStorage(this.name) {
-    log.i('Created WebWordPairStorage for $name');
+    log.i('Created WebWordPairStorage for browser storage "$name"');
   }
 
   final String name;
@@ -22,10 +22,7 @@ class WebWordPairStorage with Messaging implements WordPairStorage {
     final jsonString = jsonEncode(strings);
     log.d('Saving $jsonString');
     window.localStorage[name] = jsonString;
-    message(
-      'Saved ${list.length} word pairs including ${deleted.length} deleted to browser storage "$name"',
-      replace: true,
-    );
+    log.i('Saved ${list.length} word pairs including ${deleted.length} deleted to browser storage "$name"');
   }
 
   @override
@@ -38,7 +35,7 @@ class WebWordPairStorage with Messaging implements WordPairStorage {
     final List<dynamic> rawList = jsonDecode(jsonString);
     final strings = rawList.map((e) => e as String);
     final (list, deleted) = WordPairStorage.stringsToPairs(strings);
-    message(
+    log.i(
         'Loaded ${list.length} word pairs including ${deleted.length} deleted from browser storage "$name"');
     return (list, deleted);
   }

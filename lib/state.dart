@@ -12,7 +12,7 @@ class MyAppState extends ChangeNotifier with Messaging {
     loadFavorites().onError((error, stackTrace) {
       log.e('Failed to load $favoritesName: $error', stackTrace: stackTrace);
     });
-    addMessenger((msg, replace) => log.i(msg));
+    addMessenger((msg, replace) => log.d('Message: "$msg"'));
   }
 
   @override
@@ -20,12 +20,6 @@ class MyAppState extends ChangeNotifier with Messaging {
     log.d("MyAppState $this disposed");
     _autosaveTimer?.cancel();
     super.dispose();
-  }
-
-  @override
-  void addMessenger(Messenger messenger) {
-    super.addMessenger(messenger);
-    _favoritesStorage.addMessenger(messenger);
   }
 
   void notifyListenersFavoritesChanged() {
@@ -70,6 +64,7 @@ class MyAppState extends ChangeNotifier with Messaging {
     _autosaveTimer?.cancel();
     _autosaveTimer = null;
     _favoritesStorage.save(_favorites, _deletedFavorites);
+    message('Favorites saved', replace: true);
   }
 
   Future<void> loadFavorites() async {
@@ -80,6 +75,7 @@ class MyAppState extends ChangeNotifier with Messaging {
     _favorites.addAll(list);
     _deletedFavorites.clear();
     _deletedFavorites.addAll(deleted);
+    message('Favorites loaded');
     notifyListeners();
   }
 

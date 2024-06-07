@@ -6,7 +6,7 @@ import 'storage_impl/none.dart'
     if (dart.library.io) 'storage_impl/path_provider.dart'
     if (dart.library.html) 'storage_impl/web.dart';
 
-abstract class WordPairStorage with Messaging {
+abstract class WordPairStorage {
   Future<void> save(Iterable<WordPair> wordPairs, Set<WordPair> deleted);
 
   Future<(List<WordPair>, Set<WordPair>)> load();

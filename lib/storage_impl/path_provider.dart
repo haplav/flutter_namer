@@ -8,7 +8,7 @@ import '../storage.dart';
 
 WordPairStorage getWordPairStorageImpl(String name) => PathProviderWordPairStorage(name);
 
-class PathProviderWordPairStorage with Messaging implements WordPairStorage {
+class PathProviderWordPairStorage implements WordPairStorage {
   PathProviderWordPairStorage(String name) {
     _file = _createFileIfNotExists('$name.txt');
     _file.then((file) => log.i('PathProviderWordPairStorage is ready for\n$file'));
@@ -22,7 +22,7 @@ class PathProviderWordPairStorage with Messaging implements WordPairStorage {
     var f = File(filePath);
     if (!await f.exists()) {
       f = await f.create();
-      message('Created new data file\n${f.path}');
+      log.i('Created new data file\n${f.path}');
     }
     assert(await f.exists());
     return f;
@@ -33,10 +33,7 @@ class PathProviderWordPairStorage with Messaging implements WordPairStorage {
     final f = await _file;
     final contents = WordPairStorage.pairsToStrings(list, deleted).join('\n');
     f.writeAsString(contents);
-    message(
-      'Saved ${list.length} word pairs including ${deleted.length} deleted to\n${f.path}',
-      replace: true,
-    );
+    log.i('Saved ${list.length} word pairs including ${deleted.length} deleted to\n${f.path}');
   }
 
   @override
@@ -50,7 +47,7 @@ class PathProviderWordPairStorage with Messaging implements WordPairStorage {
     final lines = contents.split('\n');
     final (list, deleted) = WordPairStorage.stringsToPairs(lines);
     if (list.isNotEmpty) {
-      message('Loaded ${list.length} word pairs including ${deleted.length} deleted from\n${f.path}');
+      log.i('Loaded ${list.length} word pairs including ${deleted.length} deleted from\n${f.path}');
     }
     return (list, deleted);
   }
