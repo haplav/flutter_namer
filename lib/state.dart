@@ -49,15 +49,16 @@ class MyAppState extends ChangeNotifier with Messaging {
     return WordPair.random();
   }
 
-  void next() {
-    _history.insert(0, _current);
+  void next({bool history = true}) {
+    if (history) {
+      _history.insert(0, _current);
+    }
     _current = _newPair();
     notifyListeners();
   }
 
   void purgeHistory() {
     _history.clear();
-    _current = _newPair();
     notifyListeners();
   }
 

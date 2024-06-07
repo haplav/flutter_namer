@@ -161,6 +161,9 @@ class History extends StatelessWidget {
       );
     }
     appState.purgeHistory();
+    Future.delayed(Durations.short4 * (len / 2.0), () {
+      appState.next(history: false);
+    });
   }
 
   @override
