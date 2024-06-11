@@ -1,6 +1,7 @@
 # Flutter Namer
 
-Random generator of funny names consisting of English word pairs.
+A random generator of funny names consisting of English word pairs. Written in Dart/Flutter.
+
 My first Flutter app based on [this cool tutorial](https://codelabs.developers.google.com/codelabs/flutter-codelab-first).
 Thanks Filip Hracek!
 

@@ -1,11 +1,11 @@
 {
-    "name": "flutter_namer",
+    "name": "Flutter Namer",
     "short_name": "flutter_namer",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "A random generator of funny names consisting of English word pairs. Written in Dart/Flutter.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

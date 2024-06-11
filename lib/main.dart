@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'My Name Generator App',
+      title: 'Flutter Namer',
       theme: _theme(),
       home: Scaffold(
         body: Builder(
