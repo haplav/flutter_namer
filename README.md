@@ -8,7 +8,8 @@ Thanks Filip Hracek!
 This app has also all features of the Filip's [extended version](https://dartpad.dev/?id=e7076b40fb17a0fa899f9f7a154a02e8).
 I figured them out by myself as seen in the commit history.
 
-Additional features not covered in the tutorial and extended version:
+## Additional features
+(not covered in the tutorial and extended version)
 * persistance using the [path_provider](https://pub.dev/packages/path_provider) package (desktop/mobile app) or browser local storage (web)
 * switching between pages by horizontal swiping
 * Bin section for unliked item management (Restore / Delete permanently)
