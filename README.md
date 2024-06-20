@@ -1,12 +1,14 @@
 # Flutter Namer
-
 A random generator of funny names consisting of English word pairs. Written in Dart/Flutter.
 
-My first Flutter app based on [this cool tutorial](https://codelabs.developers.google.com/codelabs/flutter-codelab-first).
-Thanks Filip Hracek!
+The latest commit is deployed automatically as a web app at https://haplav.github.io/flutter_namer/, so you can easily play around with it.
+Have fun!
 
-This app has also all features of the Filip's [extended version](https://dartpad.dev/?id=e7076b40fb17a0fa899f9f7a154a02e8).
-I figured them out by myself as seen in the commit history.
+## Acknowledgement
+* This is my first Flutter app based on [this cool tutorial](https://codelabs.developers.google.com/codelabs/flutter-codelab-first).
+  - Thanks Filip Hracek!
+* This app also has all the features of Filip's [extended version](https://dartpad.dev/?id=e7076b40fb17a0fa899f9f7a154a02e8).
+  - I figured them out by myself, as seen in the commit history.
 
 ## Additional features
 (not covered in the tutorial and extended version)
